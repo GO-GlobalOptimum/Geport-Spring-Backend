@@ -1,7 +1,7 @@
 package go.glogprototype.domain.post.application;
 
 import go.glogprototype.domain.post.dao.PostRepository;
-import go.glogprototype.domain.post.dto.PostDto;
+import go.glogprototype.domain.post.dto.PostDto.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,10 +13,11 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class PostService {
 
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    public Page<PostDto.MainPageResponseDto> findAllPost(String keyword, Pageable pageable) {
-        return postRepository.postListResponseDtoPage(keyword, pageable);
+    @Transactional
+    public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable) {
+        return postRepository.postListResponseDto(keyword, pageable);
     }
 
 }

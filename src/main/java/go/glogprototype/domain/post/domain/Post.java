@@ -4,11 +4,16 @@ import go.glogprototype.domain.user.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @RequiredArgsConstructor
-public class Post {
+public class Post extends BaseEntity {
 
     @Id @GeneratedValue
     @Column(name = "post_id")
@@ -16,25 +21,35 @@ public class Post {
 
     private String title;
 
-    private int views_count;
+    private int viewsCount;
 
-    private String post_content;
+    private String postContent;
 
-    private boolean is_public;
+    private boolean isPublic;
 
-    private int like_count;
+    private int likeCount;
 
-    private String thumbnail_text;
+    private String thumbnailText;
 
-    private String thumbnail_image;
+    private String thumbnailImage;
 
-    private boolean is_comment;
+    private boolean isComment;
 
-    private boolean is_delete;
+    private boolean isDelete;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "post")
+    private List<BookMark> bookMarks = new ArrayList<>( );
+
+    private int comment_count;
+
+    private int bookMarkCount;
+
+
+
 
 
 }

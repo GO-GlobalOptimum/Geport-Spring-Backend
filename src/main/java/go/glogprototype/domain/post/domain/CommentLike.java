@@ -8,17 +8,15 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Getter
 @RequiredArgsConstructor
-public class Comment extends BaseEntity{
+public class CommentLike {
 
     @Id @GeneratedValue
-    @Column(name = "comment_id")
+    @Column(name = "comment_like_id")
     private Long id;
 
-    private String comment_content;
-
     @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
