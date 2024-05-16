@@ -41,7 +41,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
           List<FindPostResponseDto> findPostResponseDtos = jpaQueryFactory
                   .select(Projections.fields(FindPostResponseDto.class,
-                          post.id, post.title, post.post_content,member.name,post.createdDate,post.thumbnail_image,post.likeCount,post.comment_count,
+                          post.id, post.title, post.postContent,member.name,post.createdDate,post.thumbnailImage,post.likeCount,post.commentCount,
 
                           ExpressionUtils.as(
                                   JPAExpressions.select(new CaseBuilder()
@@ -102,7 +102,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
     BooleanExpression containContent(String keyword){
         if(keyword == null || keyword.isEmpty())
             return null;
-        else return post.post_content.contains(keyword);
+        else return post.postContent.contains(keyword);
     }
 
     BooleanExpression containTitle(String keyword){

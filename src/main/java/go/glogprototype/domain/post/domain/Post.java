@@ -44,7 +44,7 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<BookMark> bookMarks = new ArrayList<>( );
 
-    private int comment_count;
+    private int commentCount;
 
     private int bookMarkCount;
 

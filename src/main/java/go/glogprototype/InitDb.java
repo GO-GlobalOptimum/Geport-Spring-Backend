@@ -87,7 +87,7 @@ public class InitDb {
             post.setThumbnailText(text);
             post.setThumbnailImage(imageUrl);
             post.setComment(isComment);
-            post.setComment_count(commentCount);
+            post.setCommentCount(commentCount);
             post.setCreatedDate(createDate);
             return post;
         }

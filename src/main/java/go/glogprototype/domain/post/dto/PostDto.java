@@ -49,11 +49,11 @@ public class  PostDto{
                     .id(post.getId())
                     .title(post.getTitle())
                     .createdDate(post.getCreatedDate())
-                    .post_content(post.getPost_content())
+                    .post_content(post.getPostContent())
                     .name(member.getName())
-                    .thumbnail_image(post.getThumbnail_image())
+                    .thumbnail_image(post.getThumbnailImage())
                     .likeCount(post.getLikeCount())
-                    .replyCount(post.getComment_count())
+                    .replyCount(post.getCommentCount())
                     .build();
         }
     }

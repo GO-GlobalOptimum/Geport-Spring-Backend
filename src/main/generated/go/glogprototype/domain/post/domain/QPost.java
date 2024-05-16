@@ -24,9 +24,11 @@ public class QPost extends EntityPathBase<Post> {
 
     public final QBaseEntity _super = new QBaseEntity(this);
 
+    public final NumberPath<Integer> bookMarkCount = createNumber("bookMarkCount", Integer.class);
+
     public final ListPath<BookMark, QBookMark> bookMarks = this.<BookMark, QBookMark>createList("bookMarks", BookMark.class, QBookMark.class, PathInits.DIRECT2);
 
-    public final NumberPath<Integer> comment_count = createNumber("comment_count", Integer.class);
+    public final NumberPath<Integer> commentCount = createNumber("commentCount", Integer.class);
 
     //inherited
     public final StringPath createdBy = _super.createdBy;
@@ -36,11 +38,11 @@ public class QPost extends EntityPathBase<Post> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final BooleanPath is_comment = createBoolean("is_comment");
+    public final BooleanPath isComment = createBoolean("isComment");
 
-    public final BooleanPath is_delete = createBoolean("is_delete");
+    public final BooleanPath isDelete = createBoolean("isDelete");
 
-    public final BooleanPath is_public = createBoolean("is_public");
+    public final BooleanPath isPublic = createBoolean("isPublic");
 
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
@@ -52,15 +54,15 @@ public class QPost extends EntityPathBase<Post> {
 
     public final go.glogprototype.domain.user.domain.QMember member;
 
-    public final StringPath post_content = createString("post_content");
+    public final StringPath postContent = createString("postContent");
 
-    public final StringPath thumbnail_image = createString("thumbnail_image");
+    public final StringPath thumbnailImage = createString("thumbnailImage");
 
-    public final StringPath thumbnail_text = createString("thumbnail_text");
+    public final StringPath thumbnailText = createString("thumbnailText");
 
     public final StringPath title = createString("title");
 
-    public final NumberPath<Integer> views_count = createNumber("views_count", Integer.class);
+    public final NumberPath<Integer> viewsCount = createNumber("viewsCount", Integer.class);
 
     public QPost(String variable) {
         this(Post.class, forVariable(variable), INITS);

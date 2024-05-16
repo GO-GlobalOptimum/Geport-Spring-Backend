@@ -22,9 +22,23 @@ public class QFaq extends EntityPathBase<Faq> {
 
     public static final QFaq faq = new QFaq("faq");
 
+    public final go.glogprototype.domain.post.domain.QBaseEntity _super = new go.glogprototype.domain.post.domain.QBaseEntity(this);
+
     public final StringPath content = createString("content");
 
+    //inherited
+    public final StringPath createdBy = _super.createdBy;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    //inherited
+    public final StringPath lastModifiedBy = _super.lastModifiedBy;
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
 
     public final QMember member;
 
