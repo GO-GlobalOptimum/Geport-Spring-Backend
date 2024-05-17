@@ -17,8 +17,6 @@ import static go.glogprototype.domain.user.domain.QMember.member;
 @Data
 public class  PostDto{
 
-
-
     @NoArgsConstructor
     @Getter
     public static class FindPostResponseDto {
@@ -44,6 +42,7 @@ public class  PostDto{
             this.replyCount = replyCount;
             this.bookMark = bookMark;
         }
+
         public static FindPostResponseDto toFindPostResponseDto(Post post, Member member){
             return FindPostResponseDto.builder()
                     .id(post.getId())

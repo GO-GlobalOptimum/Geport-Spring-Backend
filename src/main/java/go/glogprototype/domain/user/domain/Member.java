@@ -44,7 +44,7 @@ public class Member {
 
     private String email;
 
-    private LocalDateTime birthDate;
+    // private LocalDateTime birthDate;
 
     private boolean isDeleted;
 

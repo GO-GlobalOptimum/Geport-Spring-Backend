@@ -28,13 +28,14 @@ public class QPost extends EntityPathBase<Post> {
 
     public final ListPath<BookMark, QBookMark> bookMarks = this.<BookMark, QBookMark>createList("bookMarks", BookMark.class, QBookMark.class, PathInits.DIRECT2);
 
+    public final ListPath<String, StringPath> categories = this.<String, StringPath>createList("categories", String.class, StringPath.class, PathInits.DIRECT2);
+
     public final NumberPath<Integer> commentCount = createNumber("commentCount", Integer.class);
 
     //inherited
     public final StringPath createdBy = _super.createdBy;
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+    public final DateTimePath<java.time.LocalDateTime> createdDate = createDateTime("createdDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
