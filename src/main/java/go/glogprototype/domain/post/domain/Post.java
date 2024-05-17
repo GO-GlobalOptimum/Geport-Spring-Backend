@@ -50,8 +50,6 @@ public class Post extends BaseEntity {
 
     private int bookMarkCount;
 
-    private LocalDateTime createdDate;
-
     @ElementCollection
     @CollectionTable(name = "post_categories", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "category")
