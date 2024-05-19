@@ -50,8 +50,5 @@ public class Post extends BaseEntity {
 
     private int bookMarkCount;
 
-    @ElementCollection
-    @CollectionTable(name = "post_categories", joinColumns = @JoinColumn(name = "post_id"))
-    @Column(name = "category")
-    private List<String> categories = new ArrayList<>();
+
 }
