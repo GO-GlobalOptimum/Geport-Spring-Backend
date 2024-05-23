@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name = "LIKES")    
 public class Like {
     @Id @GeneratedValue
     @Column(name = "like_id")
