@@ -6,6 +6,8 @@ import go.glogprototype.domain.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -14,11 +16,7 @@ public class UserController {
    private final MemberRepository memberRepository;
    private final UserService userService;
 
-   @GetMapping("/users")
-    public String userslist() {
-       
-       return "userList";
-   }
+
 
     @PostMapping("/sign-up")
     public String signUp(@RequestBody UserDto.UserSignUpDto userSignUpDto) throws Exception {
@@ -31,9 +29,10 @@ public class UserController {
         return "jwtTest 요청 성공";
     }
 
-    @GetMapping("/sign-up")
-    public String oauth2SingUp() {
-        return "oauth2Sign";
+    @GetMapping("/users")
+    public List<UserDto.UserSignUpDto> userList() {
+        return userService.findAll();
     }
+
 
 }

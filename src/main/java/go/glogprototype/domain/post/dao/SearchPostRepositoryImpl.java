@@ -76,11 +76,11 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
         return post.postContent.contains(keyword).or(post.title.contains(keyword));
     }
 
-    BooleanExpression containTitle(String keyword){
-        if(keyword == null || keyword.isEmpty())
-            return null;
-        System.out.println("keyword = " + keyword);
-        return post.title.contains(keyword);
-    }
+//    BooleanExpression containTitle(String keyword){
+//        if(keyword == null || keyword.isEmpty())
+//            return null;
+//        System.out.println("keyword = " + keyword);
+//        return post.title.contains(keyword);
+//    }
 
 }

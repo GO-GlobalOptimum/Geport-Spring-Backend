@@ -2,6 +2,7 @@ package go.glogprototype.global.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+
 import go.glogprototype.domain.user.dao.MemberRepository;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.global.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
@@ -10,6 +11,11 @@ import go.glogprototype.global.jwt.service.JwtService;
 import go.glogprototype.global.oauth2.handler.OAuth2LoginFailureHandler;
 import go.glogprototype.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import go.glogprototype.global.oauth2.service.CustomOAuth2UserService;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,7 +70,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
 //                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
-                                .requestMatchers("/sign-up","/login").permitAll() // Access to membership registration
+                                .requestMatchers("/sign-up","/login","/swagger-ui/index.html/**",   "/api-docs",
+                                        "/swagger-ui-custom.html",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/api-docs/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-custom-ui.html").permitAll() // Access to membership registration
                                 .anyRequest().authenticated() // Only authenticated users can access all paths other than the above
 
 
@@ -153,9 +165,38 @@ public class SecurityConfig {
         return customJsonUsernamePasswordLoginFilter;
     }
 
+
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
         JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
         return jwtAuthenticationFilter;
     }
+
+
+    //Swagger 설정
+
+//    @Bean
+//    public OpenAPI openAPI() {
+//        String jwt = "JWT";
+//        SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
+//        Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme()
+//                .name(jwt)
+//                .type(SecurityScheme.Type.HTTP)
+//                .scheme("bearer")
+//                .bearerFormat("JWT")
+//        );
+//        return new OpenAPI()
+//                .components(new Components())
+//                .info(apiInfo())
+//                .addSecurityItem(securityRequirement)
+//                .components(components);
+//    }
+//    private Info apiInfo() {
+//        return new Info()
+//                .title("API Test") // API의 제목
+//                .description("Let's practice Swagger UI") // API에 대한 설명
+//                .version("1.0.0"); // API의 버전
+//    }
+
+
 }

@@ -1,17 +1,17 @@
 
 spring:
-  datasource:
-    url: jdbc:h2:tcp://localhost/~/test
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/test
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
   profiles:
     group:
-      "local": "local, jwt, oauth,db"
+      "local": "local, jwt, oauth,db,swagger"
     active: local
-#  config:
-#    activate:
-#      on-profile: "local"
+  config:
+    activate:
+      on-profile: "local"
 
   jpa:
     hibernate:
