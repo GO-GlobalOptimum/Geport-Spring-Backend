@@ -38,10 +38,10 @@ public class PostService {
                 .title(postWriteDto.getTitle())
                 .postContent(postWriteDto.getPostContent())
                 .thumbnailImage(postWriteDto.getThumbnailImage())
-                .createdDate(postWriteDto.getCreatedDate())
-                .categories(postWriteDto.getCategories())
                 .isPublic(postWriteDto.isPublic())
+//                .category(postWriteDto.getCategories())
                 .build();
+        //category 는?
 
         // 엔티티를 데이터베이스에 저장
         Post savedPost = postRepository.save(post);
@@ -53,7 +53,6 @@ public class PostService {
                 .postContent(savedPost.getPostContent())
                 .thumbnailImage(savedPost.getThumbnailImage())
                 .createdDate(savedPost.getCreatedDate())
-                .categories(savedPost.getCategories())
                 .isPublic(savedPost.isPublic())
                 .build();
 

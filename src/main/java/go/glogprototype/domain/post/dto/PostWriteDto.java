@@ -1,5 +1,6 @@
 package go.glogprototype.domain.post.dto;
 
+import go.glogprototype.domain.post.domain.Category;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,10 @@ public class PostWriteDto {
     private String thumbnailImage; // 썸네일 이미지
     private LocalDateTime createdDate; // 작성 날짜
     private boolean isPublic; // 공개 여부
-    private List<String> categories; // 카테고리 목록
+    private List<Category> categories; // 카테고리 목록
 
     @Builder
-    public PostWriteDto(Long memberId, String userName, String title, String postContent, String thumbnailImage, LocalDateTime createdDate, boolean isPublic, List<String> categories) {
+    public PostWriteDto(Long memberId, String userName, String title, String postContent, String thumbnailImage, LocalDateTime createdDate, boolean isPublic, List<Category> categories) {
         this.memberId = memberId;
         this.userName = userName;
         this.title = title;

@@ -41,7 +41,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
           List<FindPostResponseDto> findPostResponseDtos = jpaQueryFactory
                   .select(Projections.fields(FindPostResponseDto.class,
-                          post.id, post.title, post.postContent,member.name,post.createdDate,post.thumbnailImage,post.likeCount,post.commentCount,
+                          post.id, post.title, post.postContent, member.name, post.createdDate, post.thumbnailImage, post.likeCount, post.commentCount,
 
                           ExpressionUtils.as(
                                   JPAExpressions.select(new CaseBuilder()
@@ -56,7 +56,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
                   )
                   .from(post)
                   .innerJoin(post.member,member)
-                  .where(containTitle(keyword), containContent(keyword))
+                  .where(containKeyword(keyword))
                   .offset(pageable.getOffset())
                   .limit(pageable.getPageSize())
                   .orderBy(
@@ -64,51 +64,23 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
                   ).fetch();
 
 
-//        Map<Long, FindPostResponseDto> findPageDtoMap = new HashMap<>();
-//        for(Tuple tuple : postTuples){
-//            Long postId = tuple.get(post.id);
-//            String title = tuple.get(post.title);
-//            String content = tuple.get(post.post_content);
-//            String username = tuple.get(member.name);
-//            LocalDateTime createDate = tuple.get(post.createdDate);
-//            String imageUrl = tuple.get(post.thumbnail_image);
-//            int likeCount = tuple.get(post.like);
-//            int commentCount = tuple.get(post.comment_count);
-//
-//
-//
-//            FindPostResponseDto findPostResponseDto =
-//                   FindPostResponseDto.builder()
-//                           .id(postId)
-//                           .title(title)
-//                           .createDate(createDate)
-//                           .content(content)
-//                           .name(username)
-//                           .image(imageUrl)
-//                           .likeCount(likeCount)
-//                           .replyCount(commentCount)
-//                           .build();
-//            findPageDtoMap.put(postId, findPostResponseDto);
-//
-//        }
 
-
-//        List<FindPostResponseDto> findPostResponseDtos = new ArrayList<>(findPageDtoMap.values());
 
         return new PageImpl<>(findPostResponseDtos, pageable, findPostResponseDtos.size());
 
     }
 
-    BooleanExpression containContent(String keyword){
+    BooleanExpression containKeyword(String keyword){
         if(keyword == null || keyword.isEmpty())
             return null;
-        else return post.postContent.contains(keyword);
+        return post.postContent.contains(keyword).or(post.title.contains(keyword));
     }
 
     BooleanExpression containTitle(String keyword){
         if(keyword == null || keyword.isEmpty())
             return null;
-        else return post.title.contains(keyword);
+        System.out.println("keyword = " + keyword);
+        return post.title.contains(keyword);
     }
 
 }

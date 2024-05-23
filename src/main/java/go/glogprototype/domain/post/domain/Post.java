@@ -50,5 +50,8 @@ public class Post extends BaseEntity {
 
     private int bookMarkCount;
 
+    @OneToMany(mappedBy = "post")
+    private List<CategoryPost> category;
+
 
 }

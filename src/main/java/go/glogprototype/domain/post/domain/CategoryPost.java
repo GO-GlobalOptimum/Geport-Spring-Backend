@@ -19,6 +19,6 @@ public class CategoryPost {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "category-id")
+    @JoinColumn(name = "category_id")
     private Category category;
 }
