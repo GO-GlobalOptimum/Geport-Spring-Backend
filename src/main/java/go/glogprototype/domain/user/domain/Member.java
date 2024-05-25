@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class Member {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -62,6 +63,7 @@ public class Member {
     private String city;
 
     private String imageUrl;
+
     // 유저 권한 설정 메소드
     public void authorizeUser() {
         this.authority = Authority.USER;

@@ -10,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "category_post")
 public class CategoryPost {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_post_id")
     private Long id;
 

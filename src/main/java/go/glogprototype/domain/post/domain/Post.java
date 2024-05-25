@@ -17,7 +17,7 @@ import java.util.List;
 public class Post extends BaseEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
 
@@ -25,6 +25,7 @@ public class Post extends BaseEntity {
 
     private int viewsCount;
 
+    @Column(columnDefinition = "longtext")
     private String postContent;
 
     private boolean isPublic;
@@ -52,6 +53,5 @@ public class Post extends BaseEntity {
 
     @OneToMany(mappedBy = "post")
     private List<CategoryPost> category;
-
 
 }

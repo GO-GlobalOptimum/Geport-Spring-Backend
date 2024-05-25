@@ -12,7 +12,8 @@ import lombok.Setter;
 @RequiredArgsConstructor
 public class BookMark {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "bookmark_id")
     private Long id;
 

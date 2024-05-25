@@ -36,7 +36,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             if(oAuth2User.getAuthority()==(Authority.GUEST)) {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-                response.sendRedirect("https://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
+                response.sendRedirect("http://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
 
                 jwtService.sendAccessAndRefreshToken(response, accessToken, null);
                 Member findUser = userRepository.findByEmail(oAuth2User.getEmail())

@@ -10,10 +10,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class Comment extends BaseEntity{
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
 
+    @Column(columnDefinition = "longtext")
     private String comment_content;
 
     @ManyToOne
