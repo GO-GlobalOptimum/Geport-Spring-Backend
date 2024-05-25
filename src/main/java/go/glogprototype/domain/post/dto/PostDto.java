@@ -17,41 +17,40 @@ import static go.glogprototype.domain.user.domain.QMember.member;
 @Data
 public class  PostDto{
 
-
-
     @NoArgsConstructor
     @Getter
     public static class FindPostResponseDto {
         private Long id;
         private String title;
-        private String post_content;
+        private String postContent;
         private String name;
         private LocalDateTime createdDate;
-        private String thumbnail_image;
+        private String thumbnailImage;
         private int likeCount;
         private int replyCount;
         private boolean bookMark;
 
         @Builder
-        public FindPostResponseDto(Long id, String title, String post_content, String name, LocalDateTime createdDate, String thumbnail_image, int likeCount, int replyCount, boolean bookMark) {
+        public FindPostResponseDto(Long id, String title, String postContent, String name, LocalDateTime createdDate, String thumbnailImage, int likeCount, int replyCount, boolean bookMark) {
             this.id = id;
             this.title = title;
-            this.post_content = post_content;
+            this.postContent = postContent;
             this.name = name;
             this.createdDate = createdDate;
-            this.thumbnail_image = thumbnail_image;
+            this.thumbnailImage = thumbnailImage;
             this.likeCount = likeCount;
             this.replyCount = replyCount;
             this.bookMark = bookMark;
         }
+
         public static FindPostResponseDto toFindPostResponseDto(Post post, Member member){
             return FindPostResponseDto.builder()
                     .id(post.getId())
                     .title(post.getTitle())
                     .createdDate(post.getCreatedDate())
-                    .post_content(post.getPostContent())
+                    .postContent(post.getPostContent())
                     .name(member.getName())
-                    .thumbnail_image(post.getThumbnailImage())
+                    .thumbnailImage(post.getThumbnailImage())
                     .likeCount(post.getLikeCount())
                     .replyCount(post.getCommentCount())
                     .build();

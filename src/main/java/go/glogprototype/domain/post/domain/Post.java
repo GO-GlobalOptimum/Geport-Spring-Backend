@@ -2,20 +2,22 @@ package go.glogprototype.domain.post.domain;
 
 import go.glogprototype.domain.user.domain.Member;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Post extends BaseEntity {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
 
@@ -23,6 +25,7 @@ public class Post extends BaseEntity {
 
     private int viewsCount;
 
+    @Column(columnDefinition = "longtext")
     private String postContent;
 
     private boolean isPublic;
@@ -42,14 +45,13 @@ public class Post extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "post")
-    private List<BookMark> bookMarks = new ArrayList<>( );
+    private List<BookMark> bookMarks = new ArrayList<>();
 
     private int commentCount;
 
     private int bookMarkCount;
 
-
-
-
+    @OneToMany(mappedBy = "post")
+    private List<CategoryPost> category;
 
 }

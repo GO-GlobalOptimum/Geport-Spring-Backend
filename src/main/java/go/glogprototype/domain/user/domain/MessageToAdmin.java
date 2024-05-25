@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 public class MessageToAdmin {
 
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_to_admin_id")
     private Long id;
 

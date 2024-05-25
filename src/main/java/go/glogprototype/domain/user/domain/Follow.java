@@ -12,7 +12,8 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class Follow extends BaseEntity {
 
-    @Id @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "follow_id")
     private Long id;
 

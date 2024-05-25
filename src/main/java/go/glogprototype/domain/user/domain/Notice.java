@@ -8,12 +8,14 @@ import lombok.Getter;
 @Getter
 
 public class Notice extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notice_id")
     private Long id;
 
     private String title;
 
+    @Column(columnDefinition = "longtext")
     private String content;
 
     @ManyToOne

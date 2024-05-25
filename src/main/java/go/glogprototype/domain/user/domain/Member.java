@@ -1,19 +1,21 @@
 package go.glogprototype.domain.user.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @RequiredArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Member {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -37,18 +39,60 @@ public class Member {
 
     private String mbti;
 
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private Authority authority;
 
     private String profileImage;
 
     private String email;
 
-    private LocalDateTime birthDate;
+    // private LocalDateTime birthDate;
 
     private boolean isDeleted;
 
     private Long geportId;
 
     private LocalDateTime deletedDate;
+
+    private String refreshToken; // 리프레시 토큰
+
+    private String socialId;
+
+    private String password;
+
+    private String city;
+
+    private String imageUrl;
+
+    // 유저 권한 설정 메소드
+    public void authorizeUser() {
+        this.authority = Authority.USER;
+    }
+
+    // 비밀번호 암호화 메소드
+    public void passwordEncode(PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(this.password);
+    }
+
+    //== 유저 필드 업데이트 ==//
+    public void updateNickname(String updateNickname) {
+        this.nickName = updateNickname;
+    }
+
+    public void updateAge(int updateAge) {
+        this.age = updateAge;
+    }
+
+    public void updateCity(String updateCity) {
+        this.city = updateCity;
+    }
+
+    public void updatePassword(String updatePassword, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(updatePassword);
+    }
+
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
+
 }

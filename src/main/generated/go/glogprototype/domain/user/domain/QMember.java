@@ -25,7 +25,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath bio = createString("bio");
 
-    public final DateTimePath<java.time.LocalDateTime> birthDate = createDateTime("birthDate", java.time.LocalDateTime.class);
+    public final StringPath city = createString("city");
 
     public final DateTimePath<java.time.LocalDateTime> deletedDate = createDateTime("deletedDate", java.time.LocalDateTime.class);
 
@@ -43,6 +43,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath imageUrl = createString("imageUrl");
+
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
     public final StringPath mbti = createString("mbti");
@@ -51,9 +53,15 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath nickName = createString("nickName");
 
+    public final StringPath password = createString("password");
+
     public final StringPath phoneNumber = createString("phoneNumber");
 
     public final StringPath profileImage = createString("profileImage");
+
+    public final StringPath refreshToken = createString("refreshToken");
+
+    public final StringPath socialId = createString("socialId");
 
     public QMember(String variable) {
         super(Member.class, forVariable(variable));

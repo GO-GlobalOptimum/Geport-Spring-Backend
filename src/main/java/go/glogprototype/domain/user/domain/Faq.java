@@ -10,12 +10,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 
 public class Faq extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
     @Column(name = "faq_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String title;
 
+    @Column(columnDefinition = "longtext")
     private String content;
 
     @ManyToOne

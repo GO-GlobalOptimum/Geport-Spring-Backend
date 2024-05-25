@@ -26,6 +26,8 @@ public class QLike extends EntityPathBase<Like> {
 
     public final go.glogprototype.domain.user.domain.QMember member;
 
+    public final QPost post;
+
     public QLike(String variable) {
         this(Like.class, forVariable(variable), INITS);
     }
@@ -45,6 +47,7 @@ public class QLike extends EntityPathBase<Like> {
     public QLike(Class<? extends Like> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new go.glogprototype.domain.user.domain.QMember(forProperty("member")) : null;
+        this.post = inits.isInitialized("post") ? new QPost(forProperty("post"), inits.get("post")) : null;
     }
 
 }
