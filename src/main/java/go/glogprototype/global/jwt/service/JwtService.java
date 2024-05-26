@@ -90,8 +90,11 @@ public class JwtService {
     public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
         response.setStatus(HttpServletResponse.SC_OK);
 
-        setAccessTokenHeader(response, accessToken);
-        setRefreshTokenHeader(response, refreshToken);
+        response.setHeader(accessHeader, "Bearer " + accessToken); // Access Token을 헤더에 추가
+        if (refreshToken != null && !refreshToken.isEmpty()) {
+            response.setHeader(refreshHeader, "Bearer " + refreshToken); // Refresh Token을 헤더에 추가
+        }
+
         log.info("Access Token, Refresh Token 헤더 설정 완료");
     }
 
@@ -162,6 +165,7 @@ public class JwtService {
                         () -> new Exception("일치하는 회원이 없습니다.")
                 );
     }
+
 
     public boolean isTokenValid(String token) {
         try {

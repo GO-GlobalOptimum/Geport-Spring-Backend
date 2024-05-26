@@ -33,15 +33,27 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
             // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
-            if(oAuth2User.getAuthority()==(Authority.GUEST)) {
+            if(oAuth2User.getAuthority()==(Authority.USER)) {
+                log.info("OAuth2 유저 정보 : " + oAuth2User.getAuthority());
+
                 String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+
+                String refreshToken = jwtService.createRefreshToken(); // Refresh Token 생성
+                userRepository.findByEmail(oAuth2User.getEmail()).ifPresent(user -> {
+                    user.updateRefreshToken(refreshToken); // DB에 Refresh Token 저장
+                    userRepository.save(user);
+                });
+
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+                log.info("Bearer" + refreshToken);
+
                 response.sendRedirect("http://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
 
                 jwtService.sendAccessAndRefreshToken(response, accessToken, null);
                 Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
                                 .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
                 findUser.authorizeUser();
+
             } else {
                 loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
             }
