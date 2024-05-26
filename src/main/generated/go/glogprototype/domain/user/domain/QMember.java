@@ -47,6 +47,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final BooleanPath isDeleted = createBoolean("isDeleted");
 
+    public final StringPath location = createString("location");
+
     public final StringPath mbti = createString("mbti");
 
     public final StringPath name = createString("name");
@@ -56,8 +58,6 @@ public class QMember extends EntityPathBase<Member> {
     public final StringPath password = createString("password");
 
     public final StringPath phoneNumber = createString("phoneNumber");
-
-    public final StringPath profileImage = createString("profileImage");
 
     public final StringPath refreshToken = createString("refreshToken");
 

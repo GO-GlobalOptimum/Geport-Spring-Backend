@@ -15,4 +15,11 @@ public abstract class OAuth2UserInfo {
     public abstract String getNickname();
 
     public abstract String getImageUrl();
+
+    public abstract String getOAuth2Id();
+    public abstract String getEmail();
+
+    public abstract String getLocale();
+
+    //public abstract String getName();
 }

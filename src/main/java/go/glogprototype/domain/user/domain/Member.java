@@ -42,8 +42,6 @@ public class Member {
     @Enumerated(value = EnumType.STRING)
     private Authority authority;
 
-    private String profileImage;
-
     private String email;
 
     // private LocalDateTime birthDate;
@@ -64,6 +62,9 @@ public class Member {
 
     private String imageUrl;
 
+    private String location;
+
+
     // 유저 권한 설정 메소드
     public void authorizeUser() {
         this.authority = Authority.USER;
@@ -74,6 +75,15 @@ public class Member {
         this.password = passwordEncoder.encode(this.password);
     }
 
+    @Builder
+    public Member(String email, String name, String socialId, Authority authority, String imageUrl, String location) {
+        this.email = email;
+        this.name = name;
+        this.socialId = socialId;
+        this.imageUrl = imageUrl;
+        this.location = location;
+        this.authority = authority != null ? authority : Authority.USER; // null 체크
+    }
     //== 유저 필드 업데이트 ==//
     public void updateNickname(String updateNickname) {
         this.nickName = updateNickname;
@@ -94,5 +104,6 @@ public class Member {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+
 
 }
