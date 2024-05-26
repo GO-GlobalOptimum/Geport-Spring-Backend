@@ -1,4 +1,4 @@
-package go.glogprototype.domain.post.domain;
+package go.glogprototype.domain.user.domain;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -15,15 +15,11 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultSupertypeSerializer")
 public class QBaseEntity extends EntityPathBase<BaseEntity> {
 
-    private static final long serialVersionUID = -538869685L;
+    private static final long serialVersionUID = 1823702710L;
 
     public static final QBaseEntity baseEntity = new QBaseEntity("baseEntity");
 
     public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
-
-    public final StringPath createdBy = createString("createdBy");
-
-    public final StringPath lastModifiedBy = createString("lastModifiedBy");
 
     public final DateTimePath<java.time.LocalDateTime> updatedAt = createDateTime("updatedAt", java.time.LocalDateTime.class);
 

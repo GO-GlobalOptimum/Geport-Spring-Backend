@@ -103,8 +103,9 @@ public class SecurityConfig {
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(new AntPathRequestMatcher("/oauth2/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/")).permitAll()  // 루트 경로 허용
+                        .requestMatchers(new AntPathRequestMatcher("/google-login")).permitAll()  // 사용자 정의 로그인 경로 허용
+                        .requestMatchers(new AntPathRequestMatcher("/oauth2/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll() // Swagger UI 경로 허용
                         .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll() // Swagger API docs 경로 허용
                         .anyRequest().authenticated()

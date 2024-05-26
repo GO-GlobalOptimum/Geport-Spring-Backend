@@ -41,7 +41,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
           List<FindPostResponseDto> findPostResponseDtos = jpaQueryFactory
                   .select(Projections.fields(FindPostResponseDto.class,
-                          post.id, post.title, post.postContent, member.name, post.createdDate, post.thumbnailImage, post.likeCount, post.commentCount,
+                          post.id, post.title, post.postContent, member.name, post.createdAt, post.thumbnailImage, post.likeCount, post.commentCount,
 
                           ExpressionUtils.as(
                                   JPAExpressions.select(new CaseBuilder()
@@ -60,7 +60,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
                   .offset(pageable.getOffset())
                   .limit(pageable.getPageSize())
                   .orderBy(
-                          post.createdDate.asc()
+                          post.createdAt.asc()
                   ).fetch();
 
 

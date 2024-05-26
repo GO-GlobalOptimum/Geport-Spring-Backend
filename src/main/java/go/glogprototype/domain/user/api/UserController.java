@@ -10,13 +10,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("spring/user")
 public class UserController {
 
    private final MemberRepository memberRepository;
    private final UserService userService;
-
-
 
     @PostMapping("/sign-up")
     public String signUp(@RequestBody UserDto.UserSignUpDto userSignUpDto) throws Exception {

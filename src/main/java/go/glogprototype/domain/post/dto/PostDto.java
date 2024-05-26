@@ -43,18 +43,18 @@ public class  PostDto{
             this.bookMark = bookMark;
         }
 
-        public static FindPostResponseDto toFindPostResponseDto(Post post, Member member){
-            return FindPostResponseDto.builder()
-                    .id(post.getId())
-                    .title(post.getTitle())
-                    .createdDate(post.getCreatedDate())
-                    .postContent(post.getPostContent())
-                    .name(member.getName())
-                    .thumbnailImage(post.getThumbnailImage())
-                    .likeCount(post.getLikeCount())
-                    .replyCount(post.getCommentCount())
-                    .build();
-        }
+//        public static FindPostResponseDto toFindPostResponseDto(Post post, Member member){
+//            return FindPostResponseDto.builder()
+//                    .id(post.getId())
+//                    .title(post.getTitle())
+//                    .createdDate(post.getCreatedDate())
+//                    .postContent(post.getPostContent())
+//                    .name(member.getName())
+//                    .thumbnailImage(post.getThumbnailImage())
+//                    .likeCount(post.getLikeCount())
+//                    .replyCount(post.getCommentCount())
+//                    .build();
+//        }
     }
 
 

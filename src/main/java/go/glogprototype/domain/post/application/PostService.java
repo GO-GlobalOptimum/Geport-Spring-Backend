@@ -2,6 +2,8 @@ package go.glogprototype.domain.post.application;
 
 import go.glogprototype.domain.post.dao.PostRepository;
 import go.glogprototype.domain.post.domain.Post;
+import go.glogprototype.domain.post.dto.CreatePostRequestDto;
+import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
 import go.glogprototype.domain.post.dto.PostWriteDto;
 import go.glogprototype.domain.user.dao.MemberRepository;
@@ -26,41 +28,55 @@ public class PostService {
         return postRepository.postListResponseDto(keyword, pageable);
     }
 
-
     @Transactional
-    public ResponseEntity<PostWriteDto> saveAllPost(PostWriteDto postWriteDto) {
-        // 해당 유저가 멤버 테이블에 존재하는지 확인한다.
-        Member member = memberRepository.findById(postWriteDto.getMemberId())
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+    public CreatePostResponseDto createPost(CreatePostRequestDto createPostRequestDto, String email) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
-        Post post = Post.builder()
-                .member(member)
-                .title(postWriteDto.getTitle())
-                .postContent(postWriteDto.getPostContent())
-                .thumbnailImage(postWriteDto.getThumbnailImage())
-                .isPublic(postWriteDto.isPublic())
-//                .category(postWriteDto.getCategories())
-                .build();
-        //category 는?
+        Post post = new Post(createPostRequestDto.getTitle(), createPostRequestDto.getContent(), createPostRequestDto.getThumbnailText(), createPostRequestDto.getThumbnailImage(), member);
 
-        // 엔티티를 데이터베이스에 저장
-        Post savedPost = postRepository.save(post);
+        // Post 저장
+        postRepository.save(post);
 
-
-        PostWriteDto responseDto = PostWriteDto.builder()
-                .memberId(savedPost.getMember().getId())
-                .title(savedPost.getTitle())
-                .postContent(savedPost.getPostContent())
-                .thumbnailImage(savedPost.getThumbnailImage())
-                .createdDate(savedPost.getCreatedDate())
-                .isPublic(savedPost.isPublic())
-                .build();
-
-
-
-        return ResponseEntity.ok(responseDto);
-
+        // 응답 DTO 생성
+        return new CreatePostResponseDto(post);
     }
+
+
+//    @Transactional
+//    public ResponseEntity<PostWriteDto> saveAllPost(PostWriteDto postWriteDto) {
+//        // 해당 유저가 멤버 테이블에 존재하는지 확인한다.
+//        Member member = memberRepository.findById(postWriteDto.getMemberId())
+//                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+//
+//        Post post = Post.builder()
+//                .member(member)
+//                .title(postWriteDto.getTitle())
+//                .postContent(postWriteDto.getPostContent())
+//                .thumbnailImage(postWriteDto.getThumbnailImage())
+//                .isPublic(postWriteDto.isPublic())
+////                .category(postWriteDto.getCategories())
+//                .build();
+//        //category 는?
+//
+//        // 엔티티를 데이터베이스에 저장
+//        Post savedPost = postRepository.save(post);
+//
+//
+//        PostWriteDto responseDto = PostWriteDto.builder()
+//                .memberId(savedPost.getMember().getId())
+//                .title(savedPost.getTitle())
+//                .postContent(savedPost.getPostContent())
+//                .thumbnailImage(savedPost.getThumbnailImage())
+//                .createdDate(savedPost.getCreatedDate())
+//                .isPublic(savedPost.isPublic())
+//                .build();
+//
+//
+//
+//        return ResponseEntity.ok(responseDto);
+//
+//    }
 
 
 }

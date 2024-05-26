@@ -25,10 +25,10 @@ public class QFollow extends EntityPathBase<Follow> {
     public final go.glogprototype.domain.post.domain.QBaseEntity _super = new go.glogprototype.domain.post.domain.QBaseEntity(this);
 
     //inherited
-    public final StringPath createdBy = _super.createdBy;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+    public final StringPath createdBy = _super.createdBy;
 
     public final QMember follower;
 
@@ -40,7 +40,7 @@ public class QFollow extends EntityPathBase<Follow> {
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QFollow(String variable) {
         this(Follow.class, forVariable(variable), INITS);

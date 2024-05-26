@@ -33,10 +33,10 @@ public class QPost extends EntityPathBase<Post> {
     public final NumberPath<Integer> commentCount = createNumber("commentCount", Integer.class);
 
     //inherited
-    public final StringPath createdBy = _super.createdBy;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdDate = _super.createdDate;
+    public final StringPath createdBy = _super.createdBy;
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -49,9 +49,6 @@ public class QPost extends EntityPathBase<Post> {
     //inherited
     public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> lastModifiedDate = _super.lastModifiedDate;
-
     public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
 
     public final go.glogprototype.domain.user.domain.QMember member;
@@ -63,6 +60,9 @@ public class QPost extends EntityPathBase<Post> {
     public final StringPath thumbnailText = createString("thumbnailText");
 
     public final StringPath title = createString("title");
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public final NumberPath<Integer> viewsCount = createNumber("viewsCount", Integer.class);
 
