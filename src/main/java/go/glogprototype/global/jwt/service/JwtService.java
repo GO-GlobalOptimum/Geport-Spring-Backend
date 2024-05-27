@@ -49,16 +49,35 @@ public class JwtService {
     /**
      * AccessToken 생성 메소드
      */
+//    public String createAccessToken(String email) {
+//        Date now = new Date();
+//        return JWT.create() // JWT 토큰을 생성하는 빌더 반환
+//                .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
+//                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
+//
+//                //클레임으로는 저희는 email 하나만 사용합니다.
+//                //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
+//                //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
+//                .withClaim(EMAIL_CLAIM, email)
+//                .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
+//    }
+
+    // JwtService 내에 refreshAccessToken 메소드 수정
+    public Optional<String> refreshAccessToken(String refreshToken) {
+        if (!isTokenValid(refreshToken)) {
+            return Optional.empty();
+        }
+
+        return userRepository.findByRefreshToken(refreshToken)
+                .map(user -> createAccessToken(user.getEmail()));
+    }
+
     public String createAccessToken(String email) {
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
-                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
-
-                //클레임으로는 저희는 email 하나만 사용합니다.
-                //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
-                //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
-                .withClaim(EMAIL_CLAIM, email)
+                .withExpiresAt(new Date(now.getTime() + 30000)) // 30초 후 만료되도록 설정
+                .withClaim(EMAIL_CLAIM, email) // 클레임으로는 email 하나만 사용합니다.
                 .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
     }
 
@@ -73,6 +92,14 @@ public class JwtService {
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
                 .sign(Algorithm.HMAC512(secretKey));
     }
+//    public String createRefreshToken() {
+//        Date now = new Date();
+//        return JWT.create()
+//                .withSubject(REFRESH_TOKEN_SUBJECT)
+//                .withExpiresAt(new Date(now.getTime() + 60000)) // 1분 후 만료되도록 설정
+//                .sign(Algorithm.HMAC512(secretKey));
+//    }
+
 
     /**
      * AccessToken 헤더에 실어서 보내기

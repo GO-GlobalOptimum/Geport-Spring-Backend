@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -65,14 +66,44 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         if (refreshToken != null) {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
+        } else {
+            // RefreshToken이 없을 때 AccessToken 검증
+            String accessToken = jwtService.extractAccessToken(request)
+                    .orElse(null);
+
+
+            if (accessToken == null || !jwtService.isTokenValid(accessToken)) {
+                throw new AuthenticationServiceException("Access Token is invalid or expired");
+            }
+
+//            if (accessToken == null || !jwtService.isTokenValid(accessToken)) {
+////                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+////                response.getWriter().write("Unauthorized: Access Token is invalid or expired.");
+////                response.getWriter().flush();
+////                response.getWriter().close();
+////                return; // 토큰 검증 실패시 요청 처리 중단
+//
+//            }
+
+            // AccessToken이 유효할 경우 인증 처리
+            jwtService.extractEmail(accessToken)
+                    .flatMap(userRepository::findByEmail)
+                    .ifPresentOrElse(
+                            this::saveAuthentication,
+                            () -> {
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                                log.error("No user found for the given email.");
+                            });
+
+            filterChain.doFilter(request, response); // 다음 필터로 요청을 전달
         }
 
         // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
         // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
         // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
-        if (refreshToken == null) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
+//        if (refreshToken == null) {
+//            checkAccessTokenAndAuthentication(request, response, filterChain);
+//        }
     }
 
     /**
@@ -82,12 +113,33 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      *  reIssueRefreshToken()로 리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
      *  그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
      */
+//    public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
+//        userRepository.findByRefreshToken(refreshToken)
+//                .ifPresent(user -> {
+//                    String reIssuedRefreshToken = reIssueRefreshToken(user);
+//                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
+//                            reIssuedRefreshToken);
+//                });
+//    }
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
         userRepository.findByRefreshToken(refreshToken)
-                .ifPresent(user -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
-                            reIssuedRefreshToken);
+                .ifPresentOrElse(user -> {
+                    if (!jwtService.isTokenValid(refreshToken)) {
+                        throw new SecurityException("Invalid Refresh Token");
+                    }
+
+                    String newAccessToken = jwtService.createAccessToken(user.getEmail());
+                    String newRefreshToken = jwtService.createRefreshToken();
+                    user.updateRefreshToken(newRefreshToken);
+                    userRepository.save(user);
+                    log.info("New Refresh Token: {}", newRefreshToken);
+                    log.info("New access Token: {}", newAccessToken);
+
+
+                    jwtService.sendAccessAndRefreshToken(response, newAccessToken, newRefreshToken);
+                }, () -> {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    log.info("No valid refresh token found");
                 });
     }
 
@@ -121,6 +173,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                                 .ifPresent(this::saveAuthentication)));
 
         filterChain.doFilter(request, response);
+
+
     }
 
     /**
@@ -144,16 +198,14 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             password = PasswordUtil.generateRandomPassword();
         }
 
-        UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(myUser.getEmail())
-                .password(password)
-                .roles(myUser.getAuthority().name())
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username( myUser.getEmail())
+                .password( myUser.getPassword())
+                .authorities( myUser.getAuthority().name())
                 .build();
 
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-                authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
-
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 }

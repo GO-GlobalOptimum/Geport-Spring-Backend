@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import go.glogprototype.domain.user.dao.MemberRepository;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.global.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
+import go.glogprototype.global.jwt.filter.JwtAuthenticationEntryPoint;
 import go.glogprototype.global.jwt.filter.JwtAuthenticationProcessingFilter;
 import go.glogprototype.global.jwt.service.JwtService;
 import go.glogprototype.global.oauth2.handler.OAuth2LoginFailureHandler;
@@ -102,6 +103,7 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .rememberMe(AbstractHttpConfigurer::disable)
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(e -> e.authenticationEntryPoint(new JwtAuthenticationEntryPoint())) // 예외 처리 추가
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers(new AntPathRequestMatcher("/")).permitAll()  // 루트 경로 허용
                         .requestMatchers(new AntPathRequestMatcher("/google-login")).permitAll()  // 사용자 정의 로그인 경로 허용
