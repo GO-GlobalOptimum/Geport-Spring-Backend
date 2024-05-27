@@ -69,7 +69,7 @@ public class SecurityConfig {
                 //== Permission management options per URL ==//
                 .authorizeHttpRequests(authorize ->
                         authorize
-//                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
+                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
                                 .requestMatchers("/sign-up","/login","/swagger-ui/index.html/**",   "/api-docs",
                                         "/swagger-ui-custom.html",
                                         "/v3/api-docs/**",

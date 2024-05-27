@@ -3,16 +3,20 @@ package go.glogprototype.global.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import go.glogprototype.domain.user.dao.MemberRepository;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +96,7 @@ public class JwtService {
 
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
+
         log.info("Access Token, Refresh Token 헤더 설정 완료");
     }
 
@@ -104,6 +109,19 @@ public class JwtService {
         return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
+    }
+    public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies( );
+        Optional<String> result = Optional.empty( );
+       for( Cookie c : cookies) {
+           log.info(c.getName());
+           if(c.getName().equals("refreshToken")) {
+               result = Optional.ofNullable(c.getValue( ));
+           }
+       }
+       return result;
+//               .filter(refreshToken -> refreshToken.startsWith(BEARER))
+//                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     /**
@@ -155,6 +173,7 @@ public class JwtService {
     /**
      * RefreshToken DB 저장(업데이트)
      */
+    @Transactional
     public void updateRefreshToken(String email, String refreshToken) {
         userRepository.findByEmail(email)
                 .ifPresentOrElse(
@@ -171,5 +190,15 @@ public class JwtService {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
+    }
+
+    public void setCookieRefreshToken(HttpServletResponse response, String refreshToken) {
+        Cookie idCookie = new Cookie("refreshToken", refreshToken);
+        // response에 쿠키 정보를 담는다.
+        // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
+        idCookie.setHttpOnly(true); // Http 환경에서 동작
+        idCookie.setSecure(true); // 이 속성과
+        idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
+        response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
     }
 }
