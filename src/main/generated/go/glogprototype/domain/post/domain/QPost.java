@@ -28,7 +28,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public final ListPath<BookMark, QBookMark> bookMarks = this.<BookMark, QBookMark>createList("bookMarks", BookMark.class, QBookMark.class, PathInits.DIRECT2);
 
-    public final ListPath<CategoryPost, QCategoryPost> category = this.<CategoryPost, QCategoryPost>createList("category", CategoryPost.class, QCategoryPost.class, PathInits.DIRECT2);
+    public final ListPath<Category, QCategory> categories = this.<Category, QCategory>createList("categories", Category.class, QCategory.class, PathInits.DIRECT2);
 
     public final NumberPath<Integer> commentCount = createNumber("commentCount", Integer.class);
 

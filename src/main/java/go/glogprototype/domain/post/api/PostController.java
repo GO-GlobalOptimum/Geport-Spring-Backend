@@ -49,4 +49,15 @@ public class PostController {
         return new ResponseEntity<>("success posting", HttpStatus.OK);
     }
 
+    @GetMapping("/list/category") //카테고리별로 게시글 불러오기
+    public ResponseEntity<Page<FindPostResponseDto>> postListByCategory(@RequestParam Long categoryId, Pageable pageable) {
+        Page<FindPostResponseDto> postList = postService.findAllPostByCategory(categoryId, pageable);
+        return new ResponseEntity<>(postList, HttpStatus.OK);
+    }
+
+    @GetMapping("/popular") //조회수 기준 인기 게시글 불러오기
+    public Page<FindPostResponseDto> postListByViews(Pageable pageable) {
+        return postService.findAllPostByViews(pageable);
+    }
+
 }

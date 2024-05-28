@@ -51,8 +51,13 @@ public class Post extends BaseEntity {
 
     private int bookMarkCount;
 
-    @OneToMany(mappedBy = "post")
-    private List<CategoryPost> category;
+    @ManyToMany
+    @JoinTable(
+            name = "CategoryPost",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories = new ArrayList<>();
 
     private String tags;
 

@@ -11,4 +11,5 @@ public class CreatePostRequestDto {
     private String thumbnailText;
     private String thumbnailImage;
     private String tags;
+    private List<Long> categoryIds;
 }

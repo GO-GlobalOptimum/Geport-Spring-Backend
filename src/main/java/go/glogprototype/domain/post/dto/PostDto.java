@@ -29,6 +29,7 @@ public class  PostDto{
         private int likeCount;
         private int replyCount;
         private boolean bookMark;
+        private int viewsCount;
 
         @Builder
         public FindPostResponseDto(Long id, String title, String postContent, String name, LocalDateTime createdDate, String thumbnailImage, int likeCount, int replyCount, boolean bookMark) {
@@ -41,6 +42,15 @@ public class  PostDto{
             this.likeCount = likeCount;
             this.replyCount = replyCount;
             this.bookMark = bookMark;
+        }
+
+        public FindPostResponseDto(Post post) {
+            this.id = post.getId();
+            this.title = post.getTitle();
+            this.postContent = post.getPostContent();
+            this.thumbnailImage = post.getThumbnailImage();
+            this.createdDate = post.getCreatedAt();
+            this.viewsCount = post.getViewsCount(); // 추가된 필드 초기화
         }
 
 //        public static FindPostResponseDto toFindPostResponseDto(Post post, Member member){
