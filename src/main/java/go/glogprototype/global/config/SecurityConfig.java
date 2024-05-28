@@ -24,15 +24,11 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 /**
@@ -53,38 +49,38 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                .formLogin(formlogin->formlogin.disable()) // disable FormLogin
-//                .httpBasic(httpBasic ->
-//                        httpBasic.disable()
-//                ) // disable httpBasic
-//                .csrf(csrf->csrf.disable()) // disable csrf security
-//                .headers((headersConfig) ->
-//                        headersConfig.frameOptions(frameOptionsConfig ->
-//                                frameOptionsConfig.disable()
-//                        )
-//                )
-//
-//                // Since session is not used, set to STATELESS
-//                .sessionManagement(sessionManagement ->
-//                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                )
-//
-//                //== Permission management options per URL ==//
-//                .authorizeHttpRequests(authorize ->
-//                        authorize
-////                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
-//                                .requestMatchers("/sign-up","/login","/swagger-ui/index.html/**",   "/api-docs",
-//                                        "/swagger-ui-custom.html",
-//                                        "/v3/api-docs/**",
-//                                        "/swagger-ui/**",
-//                                        "/api-docs/**",
-//                                        "/swagger-ui.html",
-//                                        "/swagger-custom-ui.html").permitAll() // Access to membership registration
-//                                .anyRequest().authenticated() // Only authenticated users can access all paths other than the above
-//
-//
-//                )
+        http
+                .formLogin(formlogin->formlogin.disable()) // disable FormLogin
+                .httpBasic(httpBasic ->
+                        httpBasic.disable()
+                ) // disable httpBasic
+                .csrf(csrf->csrf.disable()) // disable csrf security
+                .headers((headersConfig) ->
+                        headersConfig.frameOptions(frameOptionsConfig ->
+                                frameOptionsConfig.disable()
+                        )
+                )
+
+                // Since session is not used, set to STATELESS
+                .sessionManagement(sessionManagement ->
+                        sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+
+                //== Permission management options per URL ==//
+                .authorizeHttpRequests(authorize ->
+                        authorize
+                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
+                                .requestMatchers("/sign-up","/login","/swagger-ui/index.html/**",   "/api-docs",
+                                        "/swagger-ui-custom.html",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/api-docs/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-custom-ui.html").permitAll() // Access to membership registration
+                                .anyRequest().authenticated() // Only authenticated users can access all paths other than the above
+
+
+                )
 
 //                .authorizeRequests(authorize ->
 //                        authorize
@@ -95,47 +91,12 @@ public class SecurityConfig {
 //
 //
 //                )
-        http
-                .cors(withDefaults())
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .csrf(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .rememberMe(AbstractHttpConfigurer::disable)
-                .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(new AntPathRequestMatcher("/")).permitAll()  // 루트 경로 허용
-                        .requestMatchers(new AntPathRequestMatcher("/google-login")).permitAll()  // 사용자 정의 로그인 경로 허용
-                        .requestMatchers(new AntPathRequestMatcher("/oauth2/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll() // Swagger UI 경로 허용
-                        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll() // Swagger API docs 경로 허용
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2Login -> oauth2Login
-                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-                                .baseUri("/oauth2/authorization/google") //여기로 인증 요청이 들어옴. OAuth2 인증 요청이 시작되는 엔드포인트, Google 로그인 버튼을 눌렀을 때 이 엔드포인트로 이동
-                                //.authorizationRequestRepository(cookieAuthorizationRequestRepository)
-                        )
-                        .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
-                                .baseUri("/oauth2/code/google") //authorization url을 통한 인증 결과에 따라 redirect 되는 url. 인증이 정상적으로 진행되는 경우에는 callback url으로 사용자 인증 코드(authorization code)를 함께 반환됨.
-                        )
-                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
-                                        .userService(customOAuth2UserService) //내부적으로 authorization code를 access token으로 교환하는 과정을 거쳐 CustomOAuth2UserService로 넘어온다.
-                                //CutomOAuth2UserService에서는 access token을 통해 Resource Server에 해당 사용자의 필요한 정보를 요청
-                                //해당 정보를 통해 회원가입 또는 회원 정보 갱신 로직이 진행되며, 최종적으로 security가 인증 여부를 확인할 수 있도록 OAuth2User 객체를 반환
-                        )
-                        .successHandler(oAuth2LoginSuccessHandler) //마지막 과정으로 oAuth2AuthenticationSuccessHandler가 호출되는데, 해당 핸들러의 동작 과정에서 사용자 정보를 가지고 JwtTokenProvider를 통해 실제 사용될 access token을 발급(oauth 동작 과정에서의 access token과는 다름)하고 redirect됨. (이때 redirect 되는 uri가 바로 1번 과정에서 최초 요청 시 쿼리에 포함되어 요청된 redirect_uri임)
-                        .failureHandler(oAuth2LoginFailureHandler) //인증이 정상적으로 이뤄지지 않은 경우에는 oAuth2AuthenticationFailureHandler가 호출
-                )
-                .logout(logout -> logout
-                        .clearAuthentication(true)
-                        .deleteCookies("JSESSIONID")
-                        .logoutSuccessUrl("/")
+
+                .oauth2Login((oauth2)->oauth2
+                        .successHandler(oAuth2LoginSuccessHandler)
+                        .failureHandler(oAuth2LoginFailureHandler)
+                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))
                 );
-//                .oauth2Login((oauth2)->oauth2
-//                        .successHandler(oAuth2LoginSuccessHandler)
-//                        .failureHandler(oAuth2LoginFailureHandler)
-//                        .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))
-//                );
 
         // icon, css, js related
         // All materials in the basic page, css, image, and js subfolders are accessible, and can be accessed in h2-console.

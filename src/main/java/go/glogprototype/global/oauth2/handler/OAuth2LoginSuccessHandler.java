@@ -6,6 +6,7 @@ import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.global.jwt.service.JwtService;
 import go.glogprototype.global.oauth2.CustomOAuth2User;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,67 +14,89 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Optional;
+
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
+//@Transactional
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
     private final MemberRepository userRepository;
 
     @Override
-    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("OAuth2 Login 성공!");
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
-            Optional<Member> optionalMember = userRepository.findByEmail(oAuth2User.getEmail());
-            if (optionalMember.isPresent()) {
-                Member user = optionalMember.get();
+            // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
+            if(oAuth2User.getAuthority()==(Authority.GUEST)) {
 
-                // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
-                if (user.getAuthority() == Authority.GUEST) {
-                    log.info("OAuth2 유저 정보 : " + user.getAuthority());
+//                String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+//                response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+//                response.sendRedirect("https://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
+//
+//                jwtService.sendAccessAndRefreshToken(response, accessToken, null);
+//                Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
+//                                .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
+//                findUser.authorizeUser();
 
-                    String accessToken = jwtService.createAccessToken(user.getEmail());
-                    log.info("Bearer " + accessToken);
-                    String refreshToken = jwtService.createRefreshToken();
+                String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+                response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+                setCookieMemberId(response, oAuth2User);
+//                return ResponseEntity.ok("success");
+                response.sendRedirect("https://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
 
-                    user.updateRefreshToken(refreshToken);
-                    userRepository.save(user);
+//                jwtService.sendAccessAndRefreshToken(response, accessToken, null);
+                Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
+                        .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
 
-                    jwtService.sendAccessAndRefreshToken(response, accessToken, null);
+//                findUser.authorizeUser();
+//                userRepository.save(findUser);
+                log.info(findUser.getAuthority().toString());
+                log.info(" GUEST 회원가입 성공");
 
-                    user.authorizeUser();
-                    userRepository.save(user);
 
-                    response.sendRedirect("http://localhost:8080/auth2/code/google"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
-                } else {
-                    loginSuccess(response, user); // 로그인에 성공한 경우 access, refresh 토큰 생성
-                }
             } else {
-                throw new IllegalStateException("No user found with email: " + oAuth2User.getEmail());
+                loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
+                response.sendRedirect("https://geport.blog"); // 메인페이지
+                log.info("로그인 성공");
             }
         } catch (Exception e) {
             throw e;
         }
+
     }
 
-    // 로그인 성공 시 처리 로직
-    private void loginSuccess(HttpServletResponse response, Member user) throws IOException {
-        String accessToken = jwtService.createAccessToken(user.getEmail());
+    private void setCookieMemberId(HttpServletResponse response, CustomOAuth2User oAuth2User) {
+        Cookie idCookie = new Cookie("memberId", String.valueOf(userRepository.findByEmail(oAuth2User.getEmail()).get().getId()));
+        // response에 쿠키 정보를 담는다.
+        // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
+        idCookie.setHttpOnly(true); // Http 환경에서 동작
+        idCookie.setSecure(true); // 이 속성과
+        idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
+        response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
+    }
+
+    // TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
+    private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
         String refreshToken = jwtService.createRefreshToken();
-        log.info("Bearer " + accessToken);
-
-        jwtService.updateRefreshToken(user.getEmail(), refreshToken);
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-
-        response.sendRedirect("http://geport.blog"); // 로그인 성공 시 메인 페이지로 리다이렉트
+        response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+//        Cookie idCookie = new Cookie("refreshToken", refreshToken);
+//        // response에 쿠키 정보를 담는다.
+//        // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
+//        idCookie.setHttpOnly(true); // Http 환경에서 동작
+//        idCookie.setSecure(true); // 이 속성과
+//        idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
+//        response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
+//        response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
+            jwtService.setCookieRefreshToken(response,refreshToken);
+//        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
     }
 }
