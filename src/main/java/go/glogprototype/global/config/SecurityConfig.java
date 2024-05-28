@@ -3,19 +3,13 @@ package go.glogprototype.global.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-import go.glogprototype.domain.user.dao.MemberRepository;
-import go.glogprototype.domain.user.domain.Member;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.global.jwt.filter.CustomJsonUsernamePasswordAuthenticationFilter;
 import go.glogprototype.global.jwt.filter.JwtAuthenticationProcessingFilter;
 import go.glogprototype.global.jwt.service.JwtService;
 import go.glogprototype.global.oauth2.handler.OAuth2LoginFailureHandler;
 import go.glogprototype.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import go.glogprototype.global.oauth2.service.CustomOAuth2UserService;
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.security.SecurityRequirement;
-import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +35,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
 
     private final JwtService jwtService;
-    private final MemberRepository userRepository;
+    private final UserRepository userRepository;
     private final ObjectMapper objectMapper;
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;

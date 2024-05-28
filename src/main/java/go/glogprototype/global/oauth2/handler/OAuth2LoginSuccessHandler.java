@@ -1,6 +1,6 @@
 package go.glogprototype.global.oauth2.handler;
 
-import go.glogprototype.domain.user.dao.MemberRepository;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.domain.Authority;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.global.jwt.service.JwtService;
@@ -25,7 +25,7 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
-    private final MemberRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
