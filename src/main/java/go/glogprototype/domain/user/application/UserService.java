@@ -57,8 +57,8 @@ public class UserService {
 
 
     @Transactional(readOnly = true)
-    public UserEditDto getMemberEditDTO(Long memberId) {
-        Member member = userRepository.findById(memberId)
+    public UserEditDto getMemberEditDTO(String email) {
+        Member member = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         UserEditDto memberEditDTO = new UserEditDto();
@@ -70,8 +70,8 @@ public class UserService {
     }
 
     @Transactional
-    public void editMember(Long memberId, UserEditDto memberEditDTO) {
-        Member member = userRepository.findById(memberId)
+    public void editMember(String email, UserEditDto memberEditDTO) {
+        Member member = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         member.setNickName(memberEditDTO.getNickName());

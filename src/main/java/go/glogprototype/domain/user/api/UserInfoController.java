@@ -12,13 +12,13 @@ public class UserInfoController {
 
     private final UserService userService;
 
-    @GetMapping("/{id}/edit")
-    public UserEditDto getMember(@PathVariable Long id) {
-        return userService.getMemberEditDTO(id);
+    @GetMapping("/{email}/edit")
+    public UserEditDto getMember(@PathVariable String email) {
+        return userService.getMemberEditDTO(email);
     }
 
-    @PutMapping("/{id}/edit")
-    public void editMember(@PathVariable Long id, @RequestBody UserEditDto memberEditDTO) {
-        userService.editMember(id, memberEditDTO);
+    @PutMapping("/{email}/edit")
+    public void editMember(@PathVariable String email, @RequestBody UserEditDto memberEditDTO) {
+        userService.editMember(email, memberEditDTO);
     }
 }
