@@ -55,6 +55,8 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath postContent = createString("postContent");
 
+    public final StringPath tags = createString("tags");
+
     public final StringPath thumbnailImage = createString("thumbnailImage");
 
     public final StringPath thumbnailText = createString("thumbnailText");

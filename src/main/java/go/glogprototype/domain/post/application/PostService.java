@@ -1,7 +1,9 @@
 package go.glogprototype.domain.post.application;
 
 import go.glogprototype.domain.post.dao.PostRepository;
+import go.glogprototype.domain.post.dao.PostTagRepository;
 import go.glogprototype.domain.post.domain.Post;
+import go.glogprototype.domain.post.domain.PostTag;
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
 import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
@@ -15,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -22,6 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final PostTagRepository postTagRepository;
 
     @Transactional
     public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable) {
@@ -33,14 +39,34 @@ public class PostService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
-        Post post = new Post(createPostRequestDto.getTitle(), createPostRequestDto.getContent(), createPostRequestDto.getThumbnailText(), createPostRequestDto.getThumbnailImage(), member);
-
-        // Post 저장
+        Post post = new Post(createPostRequestDto.getTitle(), createPostRequestDto.getContent(), createPostRequestDto.getThumbnailText(), createPostRequestDto.getThumbnailImage(), member, createPostRequestDto.getTags());
         postRepository.save(post);
+
+        PostTag postTag = new PostTag(createPostRequestDto.getTags(),true);
+        postTag.setPost(post); // post 설정
+        postTagRepository.save(postTag);
+
+
 
         // 응답 DTO 생성
         return new CreatePostResponseDto(post);
     }
+
+    public CreatePostResponseDto getPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
+
+        return new CreatePostResponseDto(post);
+    }
+
+    public List<CreatePostResponseDto> getPostsByIds(List<Long> postIds) {
+        List<Post> posts = postRepository.findAllById(postIds);
+        return posts.stream()
+                .map(CreatePostResponseDto::new)
+                .collect(Collectors.toList());
+    }
+
+
 
 
 //    @Transactional

@@ -12,6 +12,7 @@ public class CreatePostResponseDto {
     private String name;
     private String postContent;
     private LocalDateTime createDate;
+    private String tags;
 
     public CreatePostResponseDto(Post post) {
         this.id = post.getId();
@@ -19,6 +20,6 @@ public class CreatePostResponseDto {
         this.name = post.getMember().getName();
         this.postContent = post.getPostContent();
         this.createDate = post.getCreatedAt();
+        this.tags = post.getTags();  // 수정된 부분
     }
 }
-

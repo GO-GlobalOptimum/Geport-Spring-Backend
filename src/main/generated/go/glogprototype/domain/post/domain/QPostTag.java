@@ -22,9 +22,11 @@ public class QPostTag extends EntityPathBase<PostTag> {
 
     public static final QPostTag postTag = new QPostTag("postTag");
 
+    public final StringPath contents = createString("contents");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath name = createString("name");
+    public final BooleanPath is_user = createBoolean("is_user");
 
     public final QPost post;
 
