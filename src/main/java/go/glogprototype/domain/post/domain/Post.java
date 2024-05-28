@@ -54,12 +54,15 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     private List<CategoryPost> category;
 
+    private String tags;
+
     @Builder
-    public Post(String title, String content, String thumbnailText, String thumbnailImage ,Member member) {
+    public Post(String title, String content, String thumbnailText, String thumbnailImage ,Member member, String tags) {
         this.title = title;
         this.postContent = content;
         this.thumbnailText = thumbnailText;
         this.thumbnailImage = thumbnailImage;
         this.member = member;
+        this.tags = tags;
     }
 }

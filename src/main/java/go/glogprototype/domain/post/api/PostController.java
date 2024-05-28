@@ -1,17 +1,13 @@
 package go.glogprototype.domain.post.api;
 
 import go.glogprototype.domain.post.application.PostService;
-import go.glogprototype.domain.post.dao.PostRepository;
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
-import go.glogprototype.domain.post.dto.PostDto;
+import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
-import go.glogprototype.domain.post.dto.PostWriteDto;
-import go.glogprototype.domain.user.dao.MemberRepository;
-import go.glogprototype.domain.user.domain.Member;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,7 +16,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -50,6 +45,7 @@ public class PostController {
         log.info("userDetails:"+ userDetails.getUsername());  //여기서 말하는 username은 이메일임!
 
         postService.createPost(createPostRequestDto, userDetails.getUsername());
+
         return new ResponseEntity<>("게시글 생성 완료", HttpStatus.OK);
     }
 
