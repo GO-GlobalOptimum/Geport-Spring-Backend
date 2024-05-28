@@ -1,6 +1,5 @@
 package go.glogprototype.domain.post.application;
 
-import go.glogprototype.domain.post.dao.CategoryPostRepository;
 import go.glogprototype.domain.post.dao.CategoryRepository;
 import go.glogprototype.domain.post.dao.PostRepository;
 import go.glogprototype.domain.post.dao.PostTagRepository;
@@ -10,14 +9,12 @@ import go.glogprototype.domain.post.domain.PostTag;
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
 import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
-import go.glogprototype.domain.post.dto.PostWriteDto;
-import go.glogprototype.domain.user.dao.MemberRepository;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.domain.Member;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,7 +26,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository memberRepository;
     private final PostTagRepository postTagRepository;
     private final CategoryRepository categoryRepository;
 
