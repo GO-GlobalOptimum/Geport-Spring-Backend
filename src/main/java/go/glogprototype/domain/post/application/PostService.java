@@ -99,4 +99,12 @@ public class PostService {
         return postRepository.findAllByOrderByViewsCountDesc(pageable)
                 .map(post -> new FindPostResponseDto(post));
     }
+
+    @Transactional
+    public Page<FindPostResponseDto> findAllPostsByUser(String email, Pageable pageable) {
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
+        return postRepository.findAllByMember(member, pageable)
+                .map(post -> new FindPostResponseDto(post));
+    }
 }

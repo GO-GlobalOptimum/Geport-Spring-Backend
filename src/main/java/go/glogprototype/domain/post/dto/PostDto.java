@@ -48,6 +48,7 @@ public class  PostDto{
             this.id = post.getId();
             this.title = post.getTitle();
             this.postContent = post.getPostContent();
+            this.name = post.getMember().getName();
             this.thumbnailImage = post.getThumbnailImage();
             this.createdDate = post.getCreatedAt();
             this.viewsCount = post.getViewsCount(); // 추가된 필드 초기화
