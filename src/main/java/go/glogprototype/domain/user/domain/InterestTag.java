@@ -10,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 @Table(name = "interest_tag")
 public class InterestTag {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "interest_tag_id")
     private Long id;
 

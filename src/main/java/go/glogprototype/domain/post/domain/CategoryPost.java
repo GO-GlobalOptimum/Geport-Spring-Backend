@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Getter
 @RequiredArgsConstructor
-@Table(name = "category_post")
 public class CategoryPost {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_post_id")
     private Long id;
 
@@ -19,6 +19,6 @@ public class CategoryPost {
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "category-id")
+    @JoinColumn(name = "category_id")
     private Category category;
 }

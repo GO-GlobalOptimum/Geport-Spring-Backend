@@ -6,13 +6,19 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name = "LIKES")    
 public class Like {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "like_id")
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;  // '좋아요' 누른 게시글 참조
 
 }
