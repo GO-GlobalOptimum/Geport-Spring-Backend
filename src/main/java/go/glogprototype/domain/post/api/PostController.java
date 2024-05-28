@@ -33,13 +33,8 @@ public class PostController {
         return postService.findAllPost(keyword, pageable);
     }
 
-//    //게시글 작성
-//    @PostMapping("/post")
-//    public ResponseEntity<PostWriteDto> postWrite(@RequestBody PostWriteDto postWriteDto){
-//        return postService.saveAllPost(postWriteDto);
-//    }
-
-    @PostMapping("/post") //게시글 작성
+    //게시글 작성
+    @PostMapping("/post")
     public ResponseEntity<String> createPost(@RequestBody CreatePostRequestDto createPostRequestDto, @AuthenticationPrincipal UserDetails userDetails){
         //log.info("log:", member.toString());
         log.info("userDetails:"+ userDetails.getUsername());  //여기서 말하는 username은 이메일임!
@@ -49,15 +44,30 @@ public class PostController {
         return new ResponseEntity<>("success posting", HttpStatus.OK);
     }
 
-    @GetMapping("/list/category") //카테고리별로 게시글 불러오기
+    //카테고리별로 게시글 불러오기
+    @GetMapping("/list/category")
     public ResponseEntity<Page<FindPostResponseDto>> postListByCategory(@RequestParam Long categoryId, Pageable pageable) {
         Page<FindPostResponseDto> postList = postService.findAllPostByCategory(categoryId, pageable);
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
-    @GetMapping("/popular") //조회수 기준 인기 게시글 불러오기
+    //조회수 기준 인기 게시글 리스트 불러오기
+    @GetMapping("/list/popular")
     public Page<FindPostResponseDto> postListByViews(Pageable pageable) {
         return postService.findAllPostByViews(pageable);
+    }
+
+    // 특정 사용자 이메일로 작성자의 게시글 리스트 불러오기
+    @GetMapping("/list/user")
+    public ResponseEntity<Page<FindPostResponseDto>> postListByUser(@RequestParam String email, Pageable pageable) {
+        Page<FindPostResponseDto> postList = postService.findAllPostsByUser(email, pageable);
+        return new ResponseEntity<>(postList, HttpStatus.OK);
+    }
+
+    @GetMapping("/post/{postId}") // 특정 게시글의 상세 내용 불러오기
+    public ResponseEntity<CreatePostResponseDto> getPost(@PathVariable Long postId) {
+        CreatePostResponseDto postResponse = postService.getPost(postId);
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
 }
