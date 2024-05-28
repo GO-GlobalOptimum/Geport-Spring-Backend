@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Getter
 @RequiredArgsConstructor
-@Table(name = "category_post")
 public class CategoryPost {
 
     @Id

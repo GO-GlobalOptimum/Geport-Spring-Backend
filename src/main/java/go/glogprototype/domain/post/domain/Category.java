@@ -1,8 +1,12 @@
 package go.glogprototype.domain.post.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -15,5 +19,13 @@ public class Category {
     private Long id;
 
     private String name;
+
+    @ManyToMany(mappedBy = "categories")
+    private List<Post> posts = new ArrayList<>();
+
+    @Builder
+    public Category(String name) {
+        this.name = name;
+    }
 
 }

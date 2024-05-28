@@ -1,7 +1,10 @@
 package go.glogprototype.domain.post.application;
 
+import go.glogprototype.domain.post.dao.CategoryPostRepository;
+import go.glogprototype.domain.post.dao.CategoryRepository;
 import go.glogprototype.domain.post.dao.PostRepository;
 import go.glogprototype.domain.post.dao.PostTagRepository;
+import go.glogprototype.domain.post.domain.Category;
 import go.glogprototype.domain.post.domain.Post;
 import go.glogprototype.domain.post.domain.PostTag;
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
@@ -28,6 +31,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final PostTagRepository postTagRepository;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable) {
@@ -39,14 +43,30 @@ public class PostService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
-        Post post = new Post(createPostRequestDto.getTitle(), createPostRequestDto.getContent(), createPostRequestDto.getThumbnailText(), createPostRequestDto.getThumbnailImage(), member, createPostRequestDto.getTags());
+        // 카테고리 찾기
+        List<Category> categories = createPostRequestDto.getCategoryIds().stream()
+                .map(categoryId -> categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new IllegalArgumentException("No category found with ID: " + categoryId)))
+                .collect(Collectors.toList());
+
+        // 포스트 생성
+        Post post = Post.builder()
+                .title(createPostRequestDto.getTitle())
+                .postContent(createPostRequestDto.getContent())
+                .thumbnailText(createPostRequestDto.getThumbnailText())
+                .thumbnailImage(createPostRequestDto.getThumbnailImage())
+                .member(member)
+                .tags(createPostRequestDto.getTags())
+                .build();
+
+        // 카테고리 설정
+        post.setCategories(categories);
         postRepository.save(post);
 
-        PostTag postTag = new PostTag(createPostRequestDto.getTags(),true);
+        // 태그 설정
+        PostTag postTag = new PostTag(createPostRequestDto.getTags(), true);
         postTag.setPost(post); // post 설정
         postTagRepository.save(postTag);
-
-
 
         // 응답 DTO 생성
         return new CreatePostResponseDto(post);
@@ -66,43 +86,17 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public Page<FindPostResponseDto> findAllPostByCategory(Long categoryId, Pageable pageable) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("No category found with ID: " + categoryId));
+        return postRepository.findAllByCategoriesOrderByViewsCountDesc(category, pageable)
+                .map(post -> new FindPostResponseDto(post));
+    }
 
-
-
-//    @Transactional
-//    public ResponseEntity<PostWriteDto> saveAllPost(PostWriteDto postWriteDto) {
-//        // 해당 유저가 멤버 테이블에 존재하는지 확인한다.
-//        Member member = memberRepository.findById(postWriteDto.getMemberId())
-//                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
-//
-//        Post post = Post.builder()
-//                .member(member)
-//                .title(postWriteDto.getTitle())
-//                .postContent(postWriteDto.getPostContent())
-//                .thumbnailImage(postWriteDto.getThumbnailImage())
-//                .isPublic(postWriteDto.isPublic())
-////                .category(postWriteDto.getCategories())
-//                .build();
-//        //category 는?
-//
-//        // 엔티티를 데이터베이스에 저장
-//        Post savedPost = postRepository.save(post);
-//
-//
-//        PostWriteDto responseDto = PostWriteDto.builder()
-//                .memberId(savedPost.getMember().getId())
-//                .title(savedPost.getTitle())
-//                .postContent(savedPost.getPostContent())
-//                .thumbnailImage(savedPost.getThumbnailImage())
-//                .createdDate(savedPost.getCreatedDate())
-//                .isPublic(savedPost.isPublic())
-//                .build();
-//
-//
-//
-//        return ResponseEntity.ok(responseDto);
-//
-//    }
-
-
+    @Transactional
+    public Page<FindPostResponseDto> findAllPostByViews(Pageable pageable) {
+        return postRepository.findAllByOrderByViewsCountDesc(pageable)
+                .map(post -> new FindPostResponseDto(post));
+    }
 }
