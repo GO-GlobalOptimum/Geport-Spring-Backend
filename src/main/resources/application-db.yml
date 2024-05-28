@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://geport.mysql.database.azure.com/geport_test_jun
+    url: jdbc:mysql://geport.mysql.database.azure.com/geport
     username: "geport"
     password: "!!aA04180303a!!"
     driver-class-name: com.mysql.cj.jdbc.Driver

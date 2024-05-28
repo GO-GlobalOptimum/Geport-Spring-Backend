@@ -47,9 +47,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
                 String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+                log.info("accessToken: "+ accessToken);
+
                 setCookieMemberId(response, oAuth2User);
 //                return ResponseEntity.ok("success");
-                response.sendRedirect("https://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
+                response.sendRedirect("http://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
 
 //                jwtService.sendAccessAndRefreshToken(response, accessToken, null);
                 Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
@@ -63,8 +65,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             } else {
                 loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-                response.sendRedirect("https://geport.blog"); // 메인페이지
+                response.sendRedirect("http://geport.blog"); // 메인페이지
                 log.info("로그인 성공");
+
             }
         } catch (Exception e) {
             throw e;
@@ -85,6 +88,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     // TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+        log.info("accessToken: "+ accessToken);
+
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
 //        Cookie idCookie = new Cookie("refreshToken", refreshToken);

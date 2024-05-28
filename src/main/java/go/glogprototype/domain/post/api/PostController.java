@@ -46,7 +46,7 @@ public class PostController {
 
         postService.createPost(createPostRequestDto, userDetails.getUsername());
 
-        return new ResponseEntity<>("게시글 생성 완료", HttpStatus.OK);
+        return new ResponseEntity<>("success posting", HttpStatus.OK);
     }
 
 }

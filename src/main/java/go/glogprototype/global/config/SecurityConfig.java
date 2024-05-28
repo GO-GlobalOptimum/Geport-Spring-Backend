@@ -69,7 +69,7 @@ public class SecurityConfig {
                 //== Permission management options per URL ==//
                 .authorizeHttpRequests(authorize ->
                         authorize
-                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
+//                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
                                 .requestMatchers("/sign-up","/login","/swagger-ui/index.html/**",   "/api-docs",
                                         "/swagger-ui-custom.html",
                                         "/v3/api-docs/**",
@@ -93,6 +93,13 @@ public class SecurityConfig {
 //                )
 
                 .oauth2Login((oauth2)->oauth2
+                        .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+                                        .baseUri("/oauth2/authorization/google") //여기로 인증 요청이 들어옴. OAuth2 인증 요청이 시작되는 엔드포인트, Google 로그인 버튼을 눌렀을 때 이 엔드포인트로 이동
+                                //.authorizationRequestRepository(cookieAuthorizationRequestRepository)
+                        )
+                        .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
+                                .baseUri("/oauth2/code/google") //authorization url을 통한 인증 결과에 따라 redirect 되는 url. 인증이 정상적으로 진행되는 경우에는 callback url으로 사용자 인증 코드(authorization code)를 함께 반환됨.
+                        )
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))
