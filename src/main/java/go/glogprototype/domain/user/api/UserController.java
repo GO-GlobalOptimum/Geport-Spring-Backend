@@ -1,7 +1,7 @@
 package go.glogprototype.domain.user.api;
 
 import go.glogprototype.domain.user.application.UserService;
-import go.glogprototype.domain.user.dao.MemberRepository;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("spring/user")
 public class UserController {
 
-   private final MemberRepository memberRepository;
+   private final UserRepository memberRepository;
    private final UserService userService;
 
     @PostMapping("/sign-up")

@@ -1,13 +1,15 @@
 package go.glogprototype.domain.user.application;
 
-import go.glogprototype.domain.user.dao.MemberRepository;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.domain.Authority;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.domain.user.dto.UserDto.*;
-import jakarta.transaction.Transactional;
+import go.glogprototype.domain.user.dto.UserEditDto;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final MemberRepository userRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     public void signUp(UserSignUpDto userSignUpDto) throws Exception {
@@ -51,6 +53,33 @@ public class UserService {
             userSignUpDtos.add(userSignUpDto);
         }
         return userSignUpDtos;
+    }
+
+
+    @Transactional(readOnly = true)
+    public UserEditDto getMemberEditDTO(String email) {
+        Member member = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        UserEditDto memberEditDTO = new UserEditDto();
+        memberEditDTO.setNickName(member.getNickName());
+        memberEditDTO.setBio(member.getBio());
+        memberEditDTO.setProfileImage(member.getImageUrl());
+
+        return memberEditDTO;
+    }
+
+    @Transactional
+    public void editMember(String email, UserEditDto memberEditDTO) {
+        Member member = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+
+        member.setNickName(memberEditDTO.getNickName());
+        member.setBio(memberEditDTO.getBio());
+        member.setImageUrl(memberEditDTO.getProfileImage());
+
+        // 변경사항 저장
+        userRepository.save(member);
     }
 }
 
