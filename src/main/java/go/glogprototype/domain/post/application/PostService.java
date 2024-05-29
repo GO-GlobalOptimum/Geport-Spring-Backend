@@ -73,7 +73,7 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
 
-        return new CreatePostResponseDto(post);
+        return new CreatePostResponseDto(post) ;
     }
 
     public List<CreatePostResponseDto> getPostsByIds(List<Long> postIds) {

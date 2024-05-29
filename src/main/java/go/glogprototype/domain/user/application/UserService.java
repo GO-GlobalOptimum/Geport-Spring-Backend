@@ -65,6 +65,10 @@ public class UserService {
         memberEditDTO.setNickName(member.getNickName());
         memberEditDTO.setBio(member.getBio());
         memberEditDTO.setProfileImage(member.getImageUrl());
+        memberEditDTO.setMbti(member.getMbti());
+        memberEditDTO.setAge(member.getAge());
+        memberEditDTO.setGender(member.getGender());
+        memberEditDTO.setPhoneNumber(member.getPhoneNumber());
 
         return memberEditDTO;
     }
@@ -77,6 +81,10 @@ public class UserService {
         member.setNickName(memberEditDTO.getNickName());
         member.setBio(memberEditDTO.getBio());
         member.setImageUrl(memberEditDTO.getProfileImage());
+        member.setMbti(memberEditDTO.getMbti().toUpperCase());
+        member.setAge(memberEditDTO.getAge());
+        member.setGender(memberEditDTO.getGender());
+        member.setPhoneNumber(memberEditDTO.getPhoneNumber());
 
         // 변경사항 저장
         userRepository.save(member);
