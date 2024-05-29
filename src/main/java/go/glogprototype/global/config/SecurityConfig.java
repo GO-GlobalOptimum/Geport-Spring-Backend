@@ -63,7 +63,7 @@ public class SecurityConfig {
                 //== Permission management options per URL ==//
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/sign-up", "/spring/login", "/swagger-ui/index.html/**", "/api-docs", "/swagger-ui-custom.html",
-                                "/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html", "/swagger-custom-ui.html").permitAll()
+                                "/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html", "/swagger-custom-ui.html", "/spring/posts/test").permitAll()
                         .anyRequest().authenticated()
                 )
 
