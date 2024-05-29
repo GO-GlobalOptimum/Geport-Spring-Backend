@@ -106,19 +106,28 @@ public class JwtService {
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
-    public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies( );
-        Optional<String> result = Optional.empty( );
-       for( Cookie c : cookies) {
-           log.info(c.getName());
-           if(c.getName().equals("refreshToken")) {
-               result = Optional.ofNullable(c.getValue( ));
-           }
-       }
-       return result;
-//               .filter(refreshToken -> refreshToken.startsWith(BEARER))
-//                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+    
+    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
+    log.debug("Extracting refresh token from cookies.");
+
+    Cookie[] cookies = request.getCookies();
+    if (cookies == null) {
+        log.error("No cookies found in the request.");
+        return null; // 또는 throw new CustomException("No cookies found in the request.");
     }
+
+    for (Cookie cookie : cookies) {
+        log.debug("Checking cookie: " + cookie.getName());
+        if ("refreshToken".equals(cookie.getName())) {
+            log.debug("Refresh token found.");
+            return cookie.getValue();
+        }
+    }
+
+    log.error("Refresh token cookie not found.");
+    return null; // 또는 throw new CustomException("Refresh token cookie not found.");
+}
+
 
     /**
      * 헤더에서 AccessToken 추출
