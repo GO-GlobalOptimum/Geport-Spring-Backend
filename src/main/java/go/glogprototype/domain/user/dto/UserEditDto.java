@@ -9,4 +9,9 @@ public class UserEditDto {
     private String nickName;
     private String bio;
     private String profileImage;
+    private String mbti;
+    private int age;
+    private String gender;
+    private String phoneNumber;
+
 }
