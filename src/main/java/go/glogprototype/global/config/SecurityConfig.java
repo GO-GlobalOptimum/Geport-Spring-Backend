@@ -79,7 +79,7 @@ public class SecurityConfig {
 
                 .oauth2Login((oauth2)->oauth2
                         .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-                                        .baseUri("/oauth2/authorization/google") //여기로 인증 요청이 들어옴. OAuth2 인증 요청이 시작되는 엔드포인트, Google 로그인 버튼을 눌렀을 때 이 엔드포인트로 이동
+                                        .baseUri("/spring/oauth2/authorization/google") //여기로 인증 요청이 들어옴. OAuth2 인증 요청이 시작되는 엔드포인트, Google 로그인 버튼을 눌렀을 때 이 엔드포인트로 이동
                                 //.authorizationRequestRepository(cookieAuthorizationRequestRepository)
                         )
                         .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
