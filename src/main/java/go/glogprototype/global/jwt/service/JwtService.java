@@ -108,13 +108,26 @@ public class JwtService {
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
-    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
-    log.debug("Extracting refresh token from cookies.");
 
-    Cookie[] cookies = request.getCookies();
-    if (cookies == null) {
-        log.error("No cookies found in the request.");
-        return null; // 또는 throw new CustomException("No cookies found in the request.");
+    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
+        log.debug("Extracting refresh token from cookies.");
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            log.error("No cookies found in the request.");
+            return null; // 또는 throw new CustomException("No cookies found in the request.");
+        }
+    
+        for (Cookie cookie : cookies) {
+            log.debug("Checking cookie: " + cookie.getName());
+            if ("refreshToken".equals(cookie.getName())) {
+                log.debug("Refresh token found.");
+                return cookie.getValue();
+            }
+        }
+    
+        log.error("Refresh token cookie not found.");
+        return null; // 또는 throw new CustomException("Refresh token cookie not found.");
     }
 
     /**
