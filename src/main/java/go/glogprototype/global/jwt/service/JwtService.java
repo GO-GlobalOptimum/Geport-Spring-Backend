@@ -83,7 +83,7 @@ public class JwtService {
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setHeader(accessHeader, accessToken);
-        log.info("재발급된 Access Token : {}", accessToken);
+        log.info("재발급된 Access Token! : {}", accessToken);
     }
 
     /**
