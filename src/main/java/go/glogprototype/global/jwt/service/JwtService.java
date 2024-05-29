@@ -53,12 +53,15 @@ public class JwtService {
      */
     public String createAccessToken(String email) {
         Date now = new Date();
-        return JWT.create()
-                .withSubject(ACCESS_TOKEN_SUBJECT)
-                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
+        return JWT.create() // JWT 토큰을 생성하는 빌더 반환
+                .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
+                .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
+
+                //클레임으로는 저희는 email 하나만 사용합니다.
+                //추가적으로 식별자나, 이름 등의 정보를 더 추가하셔도 됩니다.
+                //추가하실 경우 .withClaim(클래임 이름, 클래임 값) 으로 설정해주시면 됩니다
                 .withClaim(EMAIL_CLAIM, email)
-                .withClaim("type", "access")  // 'type' 클레임 추가
-                .sign(Algorithm.HMAC512(secretKey));
+                .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용, application-jwt.yml에서 지정한 secret 키로 암호화
     }
 
     /**
@@ -70,7 +73,6 @@ public class JwtService {
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
-                .withClaim("type", "refresh")  // 'type' 클레임 추가
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
@@ -107,7 +109,6 @@ public class JwtService {
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
-
     //     public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
 //         Cookie[] cookies = request.getCookies( );
 //         Optional<String> result = Optional.empty( );
@@ -136,21 +137,7 @@ public class JwtService {
         }
 
         return null;
-
     }
-
-    for (Cookie cookie : cookies) {
-        log.debug("Checking cookie: " + cookie.getName());
-        if ("refreshToken".equals(cookie.getName())) {
-            log.debug("Refresh token found.");
-            return cookie.getValue();
-        }
-    }
-
-    log.error("Refresh token cookie not found.");
-    return null; // 또는 throw new CustomException("Refresh token cookie not found.");
-}
-
 
     /**
      * 헤더에서 AccessToken 추출
