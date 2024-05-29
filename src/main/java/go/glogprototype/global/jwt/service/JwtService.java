@@ -108,18 +108,13 @@ public class JwtService {
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
-    public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies( );
-        Optional<String> result = Optional.empty( );
-       for( Cookie c : cookies) {
-           log.info(c.getName());
-           if(c.getName().equals("refreshToken")) {
-               result = Optional.ofNullable(c.getValue( ));
-           }
-       }
-       return result;
-//               .filter(refreshToken -> refreshToken.startsWith(BEARER))
-//                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
+    log.debug("Extracting refresh token from cookies.");
+
+    Cookie[] cookies = request.getCookies();
+    if (cookies == null) {
+        log.error("No cookies found in the request.");
+        return null; // 또는 throw new CustomException("No cookies found in the request.");
     }
 
     /**
