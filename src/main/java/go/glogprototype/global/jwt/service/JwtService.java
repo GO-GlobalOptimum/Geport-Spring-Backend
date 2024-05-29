@@ -106,14 +106,37 @@ public class JwtService {
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
-    
-    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
-    log.debug("Extracting refresh token from cookies.");
 
-    Cookie[] cookies = request.getCookies();
-    if (cookies == null) {
-        log.error("No cookies found in the request.");
-        return null; // 또는 throw new CustomException("No cookies found in the request.");
+
+    //     public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
+//         Cookie[] cookies = request.getCookies( );
+//         Optional<String> result = Optional.empty( );
+//         for( Cookie c : cookies) {
+//             log.info(c.getName());
+//             if(c.getName().equals("refreshToken")) {
+//                 result = Optional.ofNullable(c.getValue( ));
+//             }
+//         }
+//         return result;
+// //               .filter(refreshToken -> refreshToken.startsWith(BEARER))
+// //                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+//     }
+    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies == null) {
+            // 쿠키가 없는 경우 null 반환 또는 예외 처리
+            return null;
+        }
+
+        for (Cookie cookie : cookies) {
+            if ("refreshToken".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
+        return null;
+
     }
 
     for (Cookie cookie : cookies) {
@@ -138,6 +161,7 @@ public class JwtService {
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
+
     }
 
     /**
@@ -198,12 +222,12 @@ public class JwtService {
     }
 
     public void setCookieRefreshToken(HttpServletResponse response, String refreshToken) {
-        Cookie idCookie = new Cookie("refreshToken", refreshToken);
-        // response에 쿠키 정보를 담는다.
-        // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
-        idCookie.setHttpOnly(true); // Http 환경에서 동작
-        idCookie.setSecure(true); // 이 속성과
-        idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
-        response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 사용
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+        response.addCookie(refreshTokenCookie);
     }
+
 }

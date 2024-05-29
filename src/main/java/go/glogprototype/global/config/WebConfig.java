@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:8080", "http://localhost:4000", "http://geport.blog", "https://geport.blog")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowCredentials(true) // 이 부분 추가
+                .allowCredentials(true)
                 .allowedHeaders("*");
     }
 }

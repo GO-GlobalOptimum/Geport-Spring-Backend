@@ -6,6 +6,7 @@ import go.glogprototype.global.jwt.service.JwtService;
 import go.glogprototype.global.jwt.util.PasswordUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Jwt 인증 필터
@@ -37,7 +39,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-//    private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
+    private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -46,19 +48,20 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-//        if (request.getRequestURI().equals(NO_CHECK_URL)) {
-//            filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
-//            return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
-//        }
+        if (request.getRequestURI().contains(NO_CHECK_URL)) {
+            filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
+            return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
+        }
 
         // 사용자 요청 쿠키에서 RefreshToken 추출
         // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
         // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
         // 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
-        String refreshToken = jwtService.extractRefreshTokenFromCookie(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
-        log.info(jwtService.extractRefreshTokenFromCookie(request).toString());
+        String refreshToken = jwtService.extractRefreshTokenFromCookie(request);
+        if (refreshToken != null) {
+           log.info("Refresh Token 없음 ");
+        }
+        log.info("Refresh Token: " + refreshToken);
 
         // 리프레시 토큰이 요청 쿠키에 존재했다면, 사용자가 AccessToken이 만료되어서
         // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
@@ -159,7 +162,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-                authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+                        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

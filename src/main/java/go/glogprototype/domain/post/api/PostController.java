@@ -22,10 +22,18 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("spring/posts")
+@CrossOrigin(origins = "https://geport.blog")
 public class PostController {
 
     private final PostService postService;
 
+    // 로그인 없이 접근 가능한 테스트 엔드포인트
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        log.info("테스트 이거 되면 ㄹㅇ 좋겟다");
+        return new ResponseEntity<>("This is a test endpoint. No authentication required.", HttpStatus.OK);
+    }
+    
     //리스트
     @GetMapping("/list")
     public Page<FindPostResponseDto> postList(@RequestParam(required = false) String keyword, Pageable pageable){
