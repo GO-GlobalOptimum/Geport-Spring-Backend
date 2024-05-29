@@ -1,9 +1,7 @@
 package go.glogprototype.domain.notification.application;
 
 import go.glogprototype.domain.notification.dao.EmitterRepository;
-import go.glogprototype.domain.user.dao.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 

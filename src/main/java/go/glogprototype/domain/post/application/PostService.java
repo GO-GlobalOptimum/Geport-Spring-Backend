@@ -6,8 +6,7 @@ import go.glogprototype.domain.post.domain.*;
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
 import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
-import go.glogprototype.domain.post.dto.PostWriteDto;
-import go.glogprototype.domain.user.dao.MemberRepository;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.domain.Member;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository memberRepository;
+    private final UserRepository userRepository;
     private final PostTagRepository postTagRepository;
     private final CategoryRepository categoryRepository;
     private final NotificationService notificationService;
@@ -39,7 +38,7 @@ public class PostService {
 
     @Transactional
     public CreatePostResponseDto createPost(CreatePostRequestDto createPostRequestDto, String email) {
-        Member member = memberRepository.findByEmail(email)
+        Member member = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
         // 카테고리 찾기
@@ -101,7 +100,7 @@ public class PostService {
 
     @Transactional
     public Page<FindPostResponseDto> findAllPostsByUser(String email, Pageable pageable) {
-        Member member = memberRepository.findByEmail(email)
+        Member member = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
         return postRepository.findAllByMember(member, pageable)
                 .map(post -> new FindPostResponseDto(post));
@@ -114,7 +113,7 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
 
         // 좋아요를 누른 사용자에게 알림
-        Member liker = memberRepository.findByEmail(email)
+        Member liker = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
         // 이미 좋아요가 눌렸는지 확인
@@ -147,7 +146,7 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
 
-        Member commenter = memberRepository.findByEmail(email)
+        Member commenter = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
         Comment comment = new Comment();

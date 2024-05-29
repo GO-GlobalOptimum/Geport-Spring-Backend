@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("spring/user")
 public class UserController {
 
-   private final UserRepository memberRepository;
+   private final UserRepository userRepository;
    private final UserService userService;
 
     @PostMapping("/sign-up")
