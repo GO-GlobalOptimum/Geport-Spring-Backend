@@ -62,6 +62,8 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath password = createString("password");
 
+    public final StringPath personalityType = createString("personalityType");
+
     public final StringPath phoneNumber = createString("phoneNumber");
 
     public final StringPath refreshToken = createString("refreshToken");

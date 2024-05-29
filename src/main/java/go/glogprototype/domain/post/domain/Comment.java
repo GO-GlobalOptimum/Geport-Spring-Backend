@@ -4,9 +4,11 @@ import go.glogprototype.domain.user.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @RequiredArgsConstructor
 public class Comment extends BaseEntity{
 
