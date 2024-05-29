@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("spring/posts")
+@CrossOrigin(origins = "https://geport.blog")
 public class PostController {
 
     private final PostService postService;
