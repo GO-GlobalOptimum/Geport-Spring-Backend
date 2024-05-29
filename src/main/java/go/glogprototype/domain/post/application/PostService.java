@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
+    private final UserRepository memberRepository;
     private final PostTagRepository postTagRepository;
     private final CategoryRepository categoryRepository;
     private final NotificationService notificationService;
@@ -75,7 +75,7 @@ public class PostService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
 
-        return new CreatePostResponseDto(post);
+        return new CreatePostResponseDto(post) ;
     }
 
     public List<CreatePostResponseDto> getPostsByIds(List<Long> postIds) {

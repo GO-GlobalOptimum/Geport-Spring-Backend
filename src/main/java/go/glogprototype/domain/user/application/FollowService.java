@@ -1,7 +1,7 @@
 package go.glogprototype.domain.user.application;
 
 import go.glogprototype.domain.user.dao.FollowRepository;
-import go.glogprototype.domain.user.dao.MemberRepository;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.domain.Follow;
 import go.glogprototype.domain.user.domain.Member;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FollowService {
 
-    private final MemberRepository memberRepository;
+    private final UserRepository memberRepository;
     private final FollowRepository followRepository;
 
     public void followUser(String followerEmail, String followingEmail) {

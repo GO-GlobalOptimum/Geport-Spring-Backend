@@ -1,12 +1,11 @@
 package go.glogprototype.global.oauth2.service;
 
-import go.glogprototype.domain.user.dao.MemberRepository;
+import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.domain.Authority;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.global.oauth2.CustomOAuth2User;
 import go.glogprototype.global.oauth2.OAuthAttributes;
 import go.glogprototype.global.oauth2.userinfo.GoogleOAuth2UserInfo;
-import go.glogprototype.global.oauth2.userinfo.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,7 +24,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final MemberRepository userRepository;
+    private final UserRepository userRepository;
 
     private static final String NAVER = "naver";
     private static final String KAKAO = "kakao";
