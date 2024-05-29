@@ -1,11 +1,8 @@
 package go.glogprototype.domain.post.application;
 
-import go.glogprototype.domain.post.dao.CategoryRepository;
-import go.glogprototype.domain.post.dao.PostRepository;
-import go.glogprototype.domain.post.dao.PostTagRepository;
-import go.glogprototype.domain.post.domain.Category;
-import go.glogprototype.domain.post.domain.Post;
-import go.glogprototype.domain.post.domain.PostTag;
+import go.glogprototype.domain.notification.application.NotificationService;
+import go.glogprototype.domain.post.dao.*;
+import go.glogprototype.domain.post.domain.*;
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
 import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
@@ -15,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,9 +24,12 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository memberRepository;
+    private final UserRepository userRepository;
     private final PostTagRepository postTagRepository;
     private final CategoryRepository categoryRepository;
+    private final NotificationService notificationService;
+    private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
     @Transactional
     public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable) {
@@ -37,7 +38,7 @@ public class PostService {
 
     @Transactional
     public CreatePostResponseDto createPost(CreatePostRequestDto createPostRequestDto, String email) {
-        Member member = memberRepository.findByEmail(email)
+        Member member = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
         // 카테고리 찾기
@@ -99,9 +100,65 @@ public class PostService {
 
     @Transactional
     public Page<FindPostResponseDto> findAllPostsByUser(String email, Pageable pageable) {
-        Member member = memberRepository.findByEmail(email)
+        Member member = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
         return postRepository.findAllByMember(member, pageable)
                 .map(post -> new FindPostResponseDto(post));
     }
+
+
+    //게시글 좋아요 서비스
+    public void likePost(Long postId, String email) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
+
+        // 좋아요를 누른 사용자에게 알림
+        Member liker = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
+
+        // 이미 좋아요가 눌렸는지 확인
+        boolean alreadyLiked = likeRepository.existsByMemberIdAndPostId(liker.getId(), postId);
+        if (alreadyLiked) {
+            throw new IllegalArgumentException("Post already liked by this user");
+        }
+
+        // 좋아요 엔티티 생성 및 저장
+        Like like = new Like();
+        like.setPost(post);
+        like.setMember(liker);
+        likeRepository.save(like);
+
+        // 좋아요 수 증가
+        post.setLikeCount(post.getLikeCount() + 1);
+        postRepository.save(post);
+
+        Member postOwner = post.getMember();
+        Long postOwnerId = postOwner.getId();
+
+
+        // 게시물 주인에게 알림 전송
+        notificationService.notify(postOwnerId, "Your post received a like!", "like");
+        notificationService.notify(liker.getId(), "You liked a post!", "like");
+    }
+
+    //게시글 댓글 처리
+    public void commentOnPost(Long postId, String email, String commentText) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
+
+        Member commenter = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
+
+        Comment comment = new Comment();
+        comment.setPost(post);
+        comment.setMember(commenter);
+        comment.setComment_content(commentText);
+
+        // 댓글 저장 로직 추가
+        commentRepository.save(comment);
+
+        // 게시물 주인에게 알림 전송
+        notificationService.notify(post.getMember().getId(), "Your post received a new comment!", "comment");
+    }
+
 }
