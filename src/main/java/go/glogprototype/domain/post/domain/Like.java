@@ -3,9 +3,11 @@ package go.glogprototype.domain.post.domain;
 import go.glogprototype.domain.user.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "LIKES")    
 public class Like {
     @Id

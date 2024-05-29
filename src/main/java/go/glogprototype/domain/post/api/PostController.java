@@ -70,4 +70,20 @@ public class PostController {
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
+    //게시글 좋아요 처리
+    @PostMapping("/{postId}/like")
+    public ResponseEntity<String> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails) {
+
+        postService.likePost(postId, userDetails.getUsername());
+        return new ResponseEntity<>("Post liked successfully", HttpStatus.OK);
+    }
+
+    //게시글 댓글 처리
+    @PostMapping("/{postId}/comment")
+    public ResponseEntity<String> commentOnPost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails, @RequestParam String comment) {
+
+        postService.commentOnPost(postId, userDetails.getUsername(), comment);
+        return new ResponseEntity<>("Comment added successfully", HttpStatus.OK);
+    }
+
 }
