@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class FollowService {
 
-    private final UserRepository memberRepository;
+    private final UserRepository userRepository;
     private final FollowRepository followRepository;
 
     public void followUser(String followerEmail, String followingEmail) {
-        Member follower = memberRepository.findByEmail(followerEmail)
+        Member follower = userRepository.findByEmail(followerEmail)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + followerEmail));
-        Member following = memberRepository.findByEmail(followingEmail)
+        Member following = userRepository.findByEmail(followingEmail)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + followingEmail));
 
         if (!followRepository.existsByFollowerAndFollowing(follower, following)) {
@@ -31,15 +31,15 @@ public class FollowService {
 
             follower.setFollowingCount(follower.getFollowingCount() + 1);
             following.setFollowerCount(following.getFollowerCount() + 1);
-            memberRepository.save(follower);
-            memberRepository.save(following);
+            userRepository.save(follower);
+            userRepository.save(following);
         }
     }
 
     public void unfollowUser(String followerEmail, String followingEmail) {
-        Member follower = memberRepository.findByEmail(followerEmail)
+        Member follower = userRepository.findByEmail(followerEmail)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + followerEmail));
-        Member following = memberRepository.findByEmail(followingEmail)
+        Member following = userRepository.findByEmail(followingEmail)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + followingEmail));
 
         if (followRepository.existsByFollowerAndFollowing(follower, following)) {
@@ -47,8 +47,8 @@ public class FollowService {
 
             follower.setFollowingCount(follower.getFollowingCount() - 1);
             following.setFollowerCount(following.getFollowerCount() - 1);
-            memberRepository.save(follower);
-            memberRepository.save(following);
+            userRepository.save(follower);
+            userRepository.save(following);
         }
     }
 }
