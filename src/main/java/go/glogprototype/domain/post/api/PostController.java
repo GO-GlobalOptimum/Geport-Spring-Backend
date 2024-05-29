@@ -27,7 +27,7 @@ public class PostController {
 
     private final PostService postService;
 
-    // 로그인 없이 접근 가능한 테스트 엔드포인트4
+    // 로그인 없이 접근 가능한 테스트 엔드포인트5
     @GetMapping("/test")
     public ResponseEntity<String> testEndpoint() {
         log.info("테스트 이거 되면 ㄹㅇ 좋겟다");
