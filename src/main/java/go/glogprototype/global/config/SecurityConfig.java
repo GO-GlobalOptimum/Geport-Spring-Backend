@@ -70,7 +70,7 @@ public class SecurityConfig {
 //                .authorizeRequests(authorize ->
 //                        authorize
 //                                .requestMatchers("/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
-//                                .requestMatchers(new AntPathRequestMatcher("/oauth2/authorization/google")).permitAll()
+//                                .requestMatchers(new AntPathRequestMatcher("/spring/oauth2/authorization/google")).permitAll()
 //                                .requestMatchers(new AntPathRequestMatcher("/sign-up")).permitAll()// Access to membership registration
 //                                .anyRequest().authenticated() // Only authenticated users can access all paths other than the above
 //
