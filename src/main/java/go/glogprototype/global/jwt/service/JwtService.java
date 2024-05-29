@@ -109,18 +109,34 @@ public class JwtService {
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
-    public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies( );
-        Optional<String> result = Optional.empty( );
-        for( Cookie c : cookies) {
-            log.info(c.getName());
-            if(c.getName().equals("refreshToken")) {
-                result = Optional.ofNullable(c.getValue( ));
+//     public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
+//         Cookie[] cookies = request.getCookies( );
+//         Optional<String> result = Optional.empty( );
+//         for( Cookie c : cookies) {
+//             log.info(c.getName());
+//             if(c.getName().equals("refreshToken")) {
+//                 result = Optional.ofNullable(c.getValue( ));
+//             }
+//         }
+//         return result;
+// //               .filter(refreshToken -> refreshToken.startsWith(BEARER))
+// //                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+//     }
+    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies == null) {
+            // 쿠키가 없는 경우 null 반환 또는 예외 처리
+            return null;
+        }
+
+        for (Cookie cookie : cookies) {
+            if ("refreshToken".equals(cookie.getName())) {
+                return cookie.getValue();
             }
         }
-        return result;
-//               .filter(refreshToken -> refreshToken.startsWith(BEARER))
-//                .map(refreshToken -> refreshToken.replace(BEARER, ""));
+
+        return null;
     }
 
     /**
