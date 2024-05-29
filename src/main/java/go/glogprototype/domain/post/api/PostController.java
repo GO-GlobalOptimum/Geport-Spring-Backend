@@ -26,6 +26,12 @@ public class PostController {
 
     private final PostService postService;
 
+    // 로그인 없이 접근 가능한 테스트 엔드포인트
+    @GetMapping("/test")
+    public ResponseEntity<String> testEndpoint() {
+        return new ResponseEntity<>("This is a test endpoint. No authentication required.", HttpStatus.OK);
+    }
+    
     //리스트
     @GetMapping("/list")
     public Page<FindPostResponseDto> postList(@RequestParam(required = false) String keyword, Pageable pageable){
