@@ -55,7 +55,7 @@ public class SecurityConfig {
             )
             .oauth2Login(oauth2 -> oauth2
                 .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-                    .baseUri("/spring/oauth2/authorization/google")) // 여기가 인증 요청 경로
+                    .baseUri("/oauth2/authorization/google")) // 여기가 인증 요청 경로
                 .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
                     .baseUri("/spring/login/oauth2/code/google")) // 여기가 리디렉션 경로
                 .successHandler(oAuth2LoginSuccessHandler)
