@@ -17,12 +17,12 @@ public class View {
 
     private int view_count;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_VIEW_POST"))
     private Post post;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "FK_VIEW_MEMBER"))
     private Member member;
 
 }
