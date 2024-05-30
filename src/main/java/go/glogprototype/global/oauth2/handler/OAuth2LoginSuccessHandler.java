@@ -76,32 +76,25 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void setCookieMemberId(HttpServletResponse response, CustomOAuth2User oAuth2User) {
-        Cookie idCookie = new Cookie("memberId", String.valueOf(userRepository.findByEmail(oAuth2User.getEmail()).get().getId()));
-        // response에 쿠키 정보를 담는다.
-        // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
-        idCookie.setHttpOnly(true); // Http 환경에서 동작
-        idCookie.setSecure(true); // 이 속성과
-        idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
-        response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
+        String memberId = String.valueOf(userRepository.findByEmail(oAuth2User.getEmail()).get().getId());
+        Cookie idCookie = new Cookie("memberId", memberId);
+        idCookie.setHttpOnly(true);
+        idCookie.setSecure(true);
+        idCookie.setPath("/");
+        idCookie.setAttribute("SameSite", "None");
+        response.addCookie(idCookie);
     }
 
-    // TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
+
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
         log.info("accessToken: "+ accessToken);
 
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-//        Cookie idCookie = new Cookie("refreshToken", refreshToken);
-//        // response에 쿠키 정보를 담는다.
-//        // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
-//        idCookie.setHttpOnly(true); // Http 환경에서 동작
-//        idCookie.setSecure(true); // 이 속성과
-//        idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
-//        response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
-//        response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
-            jwtService.setCookieRefreshToken(response,refreshToken);
-//        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+
+        jwtService.setCookieRefreshToken(response, refreshToken);
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
     }
+
 }

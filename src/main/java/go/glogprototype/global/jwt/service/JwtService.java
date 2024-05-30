@@ -209,12 +209,12 @@ public class JwtService {
     }
 
     public void setCookieRefreshToken(HttpServletResponse response, String refreshToken) {
-        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setSecure(true); // HTTPS를 사용하는 경우에만 사용
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
-        response.addCookie(refreshTokenCookie);
+        Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/");
+        refreshCookie.setAttribute("SameSite", "None");
+        response.addCookie(refreshCookie);
     }
 
 }
