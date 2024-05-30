@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 
 @Slf4j
@@ -77,7 +79,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private void setCookieMemberId(HttpServletResponse response, CustomOAuth2User oAuth2User) {
         String memberId = String.valueOf(userRepository.findByEmail(oAuth2User.getEmail()).get().getId());
-        Cookie idCookie = new Cookie("memberId", memberId);
+        String encodedMemberId = URLEncoder.encode(memberId, StandardCharsets.UTF_8);
+        Cookie idCookie = new Cookie("memberId", encodedMemberId);
         idCookie.setHttpOnly(true);
         idCookie.setSecure(true);
         idCookie.setPath("/");
