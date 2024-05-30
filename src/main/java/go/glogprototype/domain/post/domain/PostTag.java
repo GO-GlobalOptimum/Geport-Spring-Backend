@@ -7,12 +7,14 @@ import lombok.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@Table(name = "post_tag")
+@Table(name = "post_tag", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"post_id", "contents"})
+})
 public class PostTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name ="post_tag_id")
+    @Column(name = "post_tag_id")
     private Long id;
 
     @Column(nullable = false)
@@ -22,7 +24,7 @@ public class PostTag {
     private Boolean is_user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id") // unique 속성을 사용하여 고유 제약 조건 설정
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_post_tag_post_id"))
     private Post post;
 
     public PostTag(String tags, boolean is_user) {

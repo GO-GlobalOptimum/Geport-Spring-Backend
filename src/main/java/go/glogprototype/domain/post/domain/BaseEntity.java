@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
                   // 추상 클래스로 만들어서 사용하는것을 권장한다(직접 생성할 일이 없음)
                   // @Entity 클래스는 엔티티나 @MappedSuperclass 로 지정한 클래스만 상속가능"
 public abstract class BaseEntity {
-// 
+//
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
