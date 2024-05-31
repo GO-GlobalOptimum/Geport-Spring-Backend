@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 @RequestMapping("spring/notification")
 public class NotificationController {
-
+    //수정1
     private final NotificationService notificationService;
     private final UserRepository userRepository;
 
