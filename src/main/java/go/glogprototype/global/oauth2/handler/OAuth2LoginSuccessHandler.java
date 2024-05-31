@@ -19,11 +19,9 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
-//@Transactional
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
@@ -36,45 +34,38 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
             // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
-            if(oAuth2User.getAuthority()==(Authority.GUEST)) {
-
-//                String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-//                response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-//                response.sendRedirect("https://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
-//
-//                jwtService.sendAccessAndRefreshToken(response, accessToken, null);
-//                Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
-//                                .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
-//                findUser.authorizeUser();
-
-                String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-                response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-                log.info("accessToken: "+ accessToken);
-
-                setCookieMemberId(response, oAuth2User);
-//                return ResponseEntity.ok("success");
-                response.sendRedirect("https://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
-
-//                jwtService.sendAccessAndRefreshToken(response, accessToken, null);
-                Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
-                        .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
-
-//                findUser.authorizeUser();
-//                userRepository.save(findUser);
-                log.info(findUser.getAuthority().toString());
-                log.info(" GUEST 회원가입 성공");
-
-
+            if (oAuth2User.getAuthority() == Authority.GUEST) {
+                handleGuestUser(response, oAuth2User);
             } else {
-                loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-                response.sendRedirect("https://geport.blog"); // 메인페이지
-                log.info("로그인 성공");
-
+                handleAuthenticatedUser(response, oAuth2User);
             }
         } catch (Exception e) {
+            log.error("Authentication Success Handler Error", e);
             throw e;
         }
+    }
 
+    private void handleGuestUser(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+        response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+        log.info("accessToken: " + accessToken);
+
+        setCookieMemberId(response, oAuth2User);
+
+        Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
+        
+        log.info(findUser.getAuthority().toString());
+        log.info("GUEST 회원가입 성공");
+
+        // 회원가입 페이지로 리다이렉트
+        response.sendRedirect("https://geport.blog");
+    }
+
+    private void handleAuthenticatedUser(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
+        loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
+        response.sendRedirect("https://geport.blog"); // 메인페이지
+        log.info("로그인 성공");
     }
 
     private void setCookieMemberId(HttpServletResponse response, CustomOAuth2User oAuth2User) {
@@ -88,10 +79,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addCookie(idCookie);
     }
 
-
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-        log.info("accessToken: "+ accessToken);
+        log.info("accessToken: " + accessToken);
 
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
@@ -99,5 +89,4 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtService.setCookieRefreshToken(response, refreshToken);
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
     }
-
 }
