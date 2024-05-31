@@ -34,7 +34,7 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
-    private final CustomUserDetailsService customUserDetailsService; // 추가
+    private final CustomUserDetailsService customUserDetailsService; // 추가2
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
