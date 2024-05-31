@@ -53,7 +53,7 @@ public class SecurityConfig {
                         .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
                                 .baseUri("/spring/oauth2/authorization/google"))
                         .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
-                                .baseUri("/spring/login/oauth2/code/google"))
+                                .baseUri("/"))
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))
