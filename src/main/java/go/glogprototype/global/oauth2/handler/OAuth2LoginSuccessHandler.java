@@ -53,7 +53,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
                 setCookieMemberId(response, oAuth2User);
 //                return ResponseEntity.ok("success");
-                response.sendRedirect("http://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
+                response.sendRedirect("https://geport.blog"); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
 
 //                jwtService.sendAccessAndRefreshToken(response, accessToken, null);
                 Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
@@ -67,7 +67,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             } else {
                 loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
-                response.sendRedirect("http://geport.blog"); // 메인페이지
+                response.sendRedirect("https://geport.blog"); // 메인페이지
                 log.info("로그인 성공");
 
             }
