@@ -1,7 +1,7 @@
 package go.glogprototype.global.jwt.service;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.algorithms.Algorithm; 
 import go.glogprototype.domain.user.dao.UserRepository;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
