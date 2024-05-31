@@ -66,6 +66,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private void handleAuthenticatedUser(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
         response.sendRedirect("https://geport.blog"); // 메인페이지
+        setCookieMemberId(response,oAuth2User);
         log.info("로그인 성공");
     }
 
