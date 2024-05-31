@@ -13,10 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -110,35 +110,23 @@ public class JwtService {
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
+    public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies( );
 
-    //     public Optional<String> extractRefreshTokenFromCookie(HttpServletRequest request) {
-//         Cookie[] cookies = request.getCookies( );
-//         Optional<String> result = Optional.empty( );
-//         for( Cookie c : cookies) {
-//             log.info(c.getName());
-//             if(c.getName().equals("refreshToken")) {
-//                 result = Optional.ofNullable(c.getValue( ));
-//             }
-//         }
-//         return result;
-// //               .filter(refreshToken -> refreshToken.startsWith(BEARER))
-// //                .map(refreshToken -> refreshToken.replace(BEARER, ""));
-//     }
-    public String extractRefreshTokenFromCookie(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies == null) {
-            // 쿠키가 없는 경우 null 반환 또는 예외 처리
-            return null;
+        if(cookies==null) {
+            return Optional.empty();
         }
 
-        for (Cookie cookie : cookies) {
-            if ("refreshToken".equals(cookie.getName())) {
-                return cookie.getValue();
+        Optional<String> result = Optional.empty( );
+        for( Cookie c : cookies) {
+            log.info(c.getName());
+            if(c.getName().equals("refreshToken")) {
+                result = Optional.ofNullable(c.getValue( ));
             }
         }
-
-        return null;
+        return result;
+//               .filter(refreshToken -> refreshToken.startsWith(BEARER))
+//                .map(refreshToken -> refreshToken.replace(BEARER, ""));
     }
 
     /**
@@ -150,7 +138,6 @@ public class JwtService {
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
-
     }
 
     /**
@@ -211,13 +198,12 @@ public class JwtService {
     }
 
     public void setCookieRefreshToken(HttpServletResponse response, String refreshToken) {
-        String encodedRefreshToken = URLEncoder.encode(refreshToken, StandardCharsets.UTF_8);
-        Cookie refreshCookie = new Cookie("refreshToken", encodedRefreshToken);
-        refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true);
-        refreshCookie.setPath("/");
-        refreshCookie.setAttribute("SameSite", "None");
-        response.addCookie(refreshCookie);
+        Cookie idCookie = new Cookie("refreshToken", refreshToken);
+        // response에 쿠키 정보를 담는다.
+        // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
+        idCookie.setHttpOnly(true); // Http 환경에서 동작
+        idCookie.setSecure(true); // 이 속성과
+        idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
+        response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
     }
-
 }
