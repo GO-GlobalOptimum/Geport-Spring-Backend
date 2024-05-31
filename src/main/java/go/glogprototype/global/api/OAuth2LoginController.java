@@ -1,5 +1,7 @@
 package go.glogprototype.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -20,6 +22,7 @@ import java.util.Map;
 @Controller
 public class OAuth2LoginController {
 
+    private static final Logger log = LoggerFactory.getLogger(OAuth2LoginController.class);
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final OAuth2AuthorizedClientService authorizedClientService;
 
@@ -34,7 +37,7 @@ public class OAuth2LoginController {
     public void handleGoogleLogin(@RequestParam Map<String, String> params, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String code = params.get(OAuth2ParameterNames.CODE);
         String state = params.get(OAuth2ParameterNames.STATE);
-
+        log.info("----------체크1-------------");
         if (code != null && state != null) {
             ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("google");
 
@@ -55,7 +58,7 @@ public class OAuth2LoginController {
                     .build();
 
             OAuth2AuthorizedClient authorizedClient = this.authorizedClientService.loadAuthorizedClient(clientRegistration.getRegistrationId(), request.getUserPrincipal().getName());
-
+            log.info("----------체크2-------------");
             // Custom logic to handle the authorized client
             String accessToken = authorizedClient.getAccessToken().getTokenValue();
             response.sendRedirect("/"); // Redirect to the home page or desired URL
