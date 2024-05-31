@@ -57,9 +57,15 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // -> RefreshToken이 없거나 유효하지 않다면(DB에 저장된 RefreshToken과 다르다면) null을 반환
         // 사용자의 요청 헤더에 RefreshToken이 있는 경우는, AccessToken이 만료되어 요청한 경우밖에 없다.
         // 따라서, 위의 경우를 제외하면 추출한 refreshToken은 모두 null
+
         String refreshToken = jwtService.extractRefreshTokenFromCookie(request)
-            .filter(jwtService::isTokenValid)
-            .orElse(null);
+                .filter(jwtService::isTokenValid)
+                .orElse(null);
+        log.info(jwtService.extractRefreshTokenFromCookie(request).toString());
+        
+        // String refreshToken = jwtService.extractRefreshTokenFromCookie(request)
+        //     .filter(jwtService::isTokenValid)
+        //     .orElse(null);
         if (refreshToken != null) {
            log.info("Refresh Token 없음 ");
         }
