@@ -37,7 +37,7 @@ public class OAuth2LoginController2 {
     public void handleGoogleLogin(@RequestParam Map<String, String> params, HttpServletRequest request, HttpServletResponse response) throws IOException {
         String code = params.get(OAuth2ParameterNames.CODE);
         String state = params.get(OAuth2ParameterNames.STATE);
-        log.info("----------체크1-------------");
+        log.info("----------체크3333-------------");
         System.out.println("----------체크1-------------");
         if (code != null && state != null) {
             ClientRegistration clientRegistration = clientRegistrationRepository.findByRegistrationId("google");
