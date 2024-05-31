@@ -20,14 +20,14 @@ import java.io.IOException;
 import java.util.Map;
 
 @Controller
-public class OAuth2LoginController {
+public class OAuth2LoginController2 {
 
-    private static final Logger log = LoggerFactory.getLogger(OAuth2LoginController.class);
+    private static final Logger log = LoggerFactory.getLogger(go.glogprototype.controller.OAuth2LoginController.class);
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final OAuth2AuthorizedClientService authorizedClientService;
 
     @Autowired
-    public OAuth2LoginController(ClientRegistrationRepository clientRegistrationRepository,
+    public OAuth2LoginController2(ClientRegistrationRepository clientRegistrationRepository,
                                  OAuth2AuthorizedClientService authorizedClientService) {
         this.clientRegistrationRepository = clientRegistrationRepository;
         this.authorizedClientService = authorizedClientService;
