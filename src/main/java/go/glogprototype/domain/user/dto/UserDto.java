@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 
 public class UserDto {
 
-     @NoArgsConstructor
-    @Getter
+    @NoArgsConstructor
+    @Data
     @AllArgsConstructor
     public static class UserSignUpDto {
 
@@ -20,7 +20,7 @@ public class UserDto {
 
 
     @NoArgsConstructor
-    @Getter
+    @Data
     @AllArgsConstructor
     public static class UserInfoDto {
 
