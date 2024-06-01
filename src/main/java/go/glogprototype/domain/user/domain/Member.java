@@ -106,6 +106,11 @@ public class Member extends BaseEntity {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+    public void update(UserInfoDto userInfoDto) {
+        this.name = userInfoDto.getName();
+        this.bio = userInfoDto.getBio();
+        this.imageUrl = userInfoDto.getImageUrl();
+    }
 
 
 }
