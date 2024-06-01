@@ -89,6 +89,27 @@ public class UserService {
         // 변경사항 저장
         userRepository.save(member);
     }
+
+     public UserInfoDto showUserInfo(Long memberId) {
+
+        Optional<Member> findMember = userRepository.findById(memberId);
+
+        return UserInfoDto.builder( )
+                .bio(findMember.orElseThrow().getBio())
+                .id(findMember.orElseThrow().getId())
+                .name(findMember.orElseThrow().getName())
+                .imageUrl(findMember.orElseThrow().getImageUrl()).build( );
+
+
+    }
+
+    public UserInfoDto updateUserInfo(Long memberId, UserInfoDto userInfoDto) {
+
+        Optional<Member> findMember = userRepository.findById(memberId);
+        findMember.orElseThrow().update(userInfoDto);
+
+        return userInfoDto;
+    }
 }
 
 
