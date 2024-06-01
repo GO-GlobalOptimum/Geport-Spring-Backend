@@ -45,6 +45,7 @@ public class Post extends BaseEntity {
     private Member member;
 
     @OneToMany(mappedBy = "post")
+    @Builder.Default
     private List<BookMark> bookMarks = new ArrayList<>();
 
     private int commentCount;
@@ -57,6 +58,7 @@ public class Post extends BaseEntity {
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
+    @Builder.Default
     private List<Category> categories = new ArrayList<>();
 
     private String tags;
