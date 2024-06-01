@@ -32,5 +32,28 @@ public class UserController {
         return userService.findAll();
     }
 
+        //유저 정보 가져오기
+    @GetMapping("/myInfo")
+    public UserInfoDto myInfo(@CookieValue(value = "memberId") Cookie cookie) {
+
+        Long memberId = Long.valueOf(cookie.getValue());
+
+        return userService.showUserInfo(memberId);
+    }
+
+    //유저 정보 수정하기
+    @PostMapping("/myInfo")
+    public UserInfoDto EditMyInfo(@CookieValue(value = "memberId") Cookie cookie,
+                                  @RequestBody UserInfoDto userInfoDto) {
+
+        Long memberId = Long.valueOf(cookie.getValue());
+
+
+        return userService.updateUserInfo(memberId, userInfoDto);
+
+    }
+
+   
+
 
 }
