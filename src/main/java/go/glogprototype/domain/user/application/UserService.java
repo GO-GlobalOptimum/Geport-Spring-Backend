@@ -94,11 +94,13 @@ public class UserService {
 
         Optional<Member> findMember = userRepository.findById(memberId);
 
-        return UserInfoDto.builder( )
-                .bio(findMember.orElseThrow().getBio())
-                .id(findMember.orElseThrow().getId())
-                .name(findMember.orElseThrow().getName())
-                .imageUrl(findMember.orElseThrow().getImageUrl()).build( );
+
+          return  new UserInfoDto( findMember.orElseThrow().getId(),findMember.orElseThrow().getName(),findMember.orElseThrow().getBio(),findMember.orElseThrow().getImageUrl() );
+//         UserInfoDto.builder( )
+//                .bio(findMember.orElseThrow().getBio())
+//                .id(findMember.orElseThrow().getId())
+//                .name(findMember.orElseThrow().getName())
+//                .imageUrl(findMember.orElseThrow().getImageUrl()).build( );
 
 
     }
