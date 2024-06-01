@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("spring/user")
+@RequestMapping("/spring/user")
 public class UserController {
 
    private final UserRepository memberRepository;
