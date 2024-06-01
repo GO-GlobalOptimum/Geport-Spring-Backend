@@ -9,7 +9,6 @@ public class UserDto {
      @NoArgsConstructor
     @Getter
     @AllArgsConstructor
-    @Builder
     public static class UserSignUpDto {
 
         private String email;
@@ -23,7 +22,6 @@ public class UserDto {
     @NoArgsConstructor
     @Getter
     @AllArgsConstructor
-    @Builder
     public static class UserInfoDto {
 
         private Long id;
