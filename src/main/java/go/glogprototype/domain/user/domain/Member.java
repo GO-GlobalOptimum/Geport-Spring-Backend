@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
+import go.glogprototype.domain.user.dto.UserDto.*;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 
