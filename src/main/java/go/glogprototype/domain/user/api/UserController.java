@@ -6,6 +6,7 @@ import go.glogprototype.domain.user.dto.UserDto;
 import go.glogprototype.domain.user.dto.UserDto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.Cookie;
 
 import java.util.List;
 
