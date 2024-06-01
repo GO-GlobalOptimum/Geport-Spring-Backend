@@ -6,9 +6,10 @@ import lombok.NoArgsConstructor;
 
 public class UserDto {
 
-    @NoArgsConstructor
+     @NoArgsConstructor
     @Getter
     @AllArgsConstructor
+    @Builder
     public static class UserSignUpDto {
 
         private String email;
@@ -16,5 +17,23 @@ public class UserDto {
         private String nickname;
         private int age;
         private String city;
+    }
+
+
+    @NoArgsConstructor
+    @Getter
+    @AllArgsConstructor
+    @Builder
+    public static class UserInfoDto {
+
+        private Long id;
+
+        private String name;
+
+        private String bio;
+
+        private String imageUrl;
+
+
     }
 }
