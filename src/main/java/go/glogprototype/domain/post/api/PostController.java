@@ -94,4 +94,12 @@ public class PostController {
         return new ResponseEntity<>("Comment added successfully", HttpStatus.OK);
     }
 
+
+    // 나의 게시글 리스트 불러오기
+    @GetMapping("/list/my-list")
+    public ResponseEntity<Page<FindPostResponseDto>> postListByUser(@AuthenticationPrincipal UserDetails userDetails, Pageable pageable) {
+        String email = userDetails.getUsername();
+        Page<FindPostResponseDto> postList = postService.findAllPostsByUser(email, pageable);
+        return new ResponseEntity<>(postList, HttpStatus.OK);
+    }
 }
