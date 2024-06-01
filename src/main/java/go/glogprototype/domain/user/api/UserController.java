@@ -3,6 +3,7 @@ package go.glogprototype.domain.user.api;
 import go.glogprototype.domain.user.application.UserService;
 import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.dto.UserDto;
+import go.glogprototype.domain.user.dto.UserDto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
