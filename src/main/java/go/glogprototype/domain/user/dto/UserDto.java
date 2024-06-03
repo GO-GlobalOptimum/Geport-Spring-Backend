@@ -24,7 +24,7 @@ public class UserDto {
     @AllArgsConstructor
     public static class UserInfoDto {
 
-        private Long id;
+//        private Long id;
 
         private String name;
 
