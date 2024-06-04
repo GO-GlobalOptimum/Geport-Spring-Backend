@@ -38,7 +38,7 @@ public class PostController {
     @GetMapping("/list")
     public Page<FindPostResponseDto> postList(@RequestParam(required = false) String keyword, Pageable pageable){
         log.info("test={}", keyword);
-        return postService.findAllPost(keyword, pageable);
+        return postService.findAllPost(keyword, pageable,null);
     }
 
     //게시글 작성
@@ -66,13 +66,13 @@ public class PostController {
     }
 
     // 특정 사용자 이메일로 작성자의 게시글 리스트 불러오기
-    @GetMapping("/list/user")
-    public ResponseEntity<Page<FindPostResponseDto>> postListByUser(@RequestParam String email, Pageable pageable) {
-        Page<FindPostResponseDto> postList = postService.findAllPostsByUser(email, pageable);
-        return new ResponseEntity<>(postList, HttpStatus.OK);
-    }
+//    @GetMapping("/list/user")
+//    public ResponseEntity<Page<FindPostResponseDto>> postListByUser(@RequestParam String email, Pageable pageable) {
+//        Page<FindPostResponseDto> postList = postService.findAllPostsByUser(email, pageable);
+//        return new ResponseEntity<>(postList, HttpStatus.OK);
+//    }
 
-    @GetMapping("/post/{postId}") // 특정 게시글의 상세 내용 불러오기
+    @GetMapping("/{postId}") // 특정 게시글의 상세 내용 불러오기
     public ResponseEntity<CreatePostResponseDto> getPost(@PathVariable Long postId) {
         CreatePostResponseDto postResponse = postService.getPost(postId);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
@@ -97,9 +97,15 @@ public class PostController {
 
     // 나의 게시글 리스트 불러오기
     @GetMapping("/list/my-list")
-    public ResponseEntity<Page<FindPostResponseDto>> postListByUser(@AuthenticationPrincipal UserDetails userDetails, Pageable pageable) {
-        String email = userDetails.getUsername();
-        Page<FindPostResponseDto> postList = postService.findAllPostsByUser(email, pageable);
+    public ResponseEntity<Page<FindPostResponseDto>> postListByUser(@CookieValue ("memberId") Long memberId,Pageable pageable) {
+
+        Page<FindPostResponseDto> postList = postService.findAllPost(null,pageable,memberId);
         return new ResponseEntity<>(postList, HttpStatus.OK);
+    }
+
+    //게시글 삭제
+    @PostMapping("/{postId}/delete")
+    public String deletePost(@PathVariable Long postId) {
+        return postService.deletePost(postId);
     }
 }

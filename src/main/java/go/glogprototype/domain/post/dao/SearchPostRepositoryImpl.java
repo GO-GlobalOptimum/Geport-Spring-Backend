@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import go.glogprototype.domain.post.domain.Category;
 import go.glogprototype.domain.post.domain.Post;
 import go.glogprototype.domain.post.domain.QBookMark;
 import go.glogprototype.domain.post.dto.PostDto.*;
@@ -25,7 +26,7 @@ import java.util.List;
 import static go.glogprototype.domain.post.domain.QPost.post;
 import static go.glogprototype.domain.user.domain.QMember.member;
 import static go.glogprototype.domain.post.domain.QBookMark.bookMark;
-
+import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
 
 
 @Repository
@@ -37,7 +38,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
         this.jpaQueryFactory = jpaQueryFactory;
     }
     @Override
-    public Page<FindPostResponseDto> postListResponseDto(String keyword, Pageable pageable) {
+    public Page<FindPostResponseDto> postListResponseDto(String keyword, Pageable pageable, Long memberId) {
 
           List<FindPostResponseDto> findPostResponseDtos = jpaQueryFactory
                   .select(Projections.fields(FindPostResponseDto.class,
@@ -56,7 +57,7 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
                   )
                   .from(post)
                   .innerJoin(post.member,member)
-                  .where(containKeyword(keyword))
+                  .where(containKeywordAndMemberId(keyword,memberId),post.isDelete.eq(false))
                   .offset(pageable.getOffset())
                   .limit(pageable.getPageSize())
                   .orderBy(
@@ -70,10 +71,31 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
     }
 
-    BooleanExpression containKeyword(String keyword){
-        if(keyword == null || keyword.isEmpty())
+//    BooleanExpression containKeyword(String keyword){
+//        if(keyword == null || keyword.isEmpty())
+//            return null;
+//        return post.postContent.contains(keyword).or(post.title.contains(keyword));
+//    }
+
+    BooleanExpression containKeywordAndMemberId(String keyword, Long memberId){
+
+        if( (memberId==null) && (keyword ==null || keyword.isEmpty())) {
             return null;
-        return post.postContent.contains(keyword).or(post.title.contains(keyword));
+        }
+        else if((memberId==null)&&!(keyword==null || keyword.isEmpty())) {
+            return post.postContent.contains(keyword).or(post.title.contains(keyword));
+        }
+
+        else if((memberId!=null)&&(keyword == null || keyword.isEmpty())) {
+            return post.member.id.eq(memberId);
+        }
+
+        else {
+            return post.postContent.contains(keyword).or(post.title.contains(keyword)).or(post.member.id.eq(memberId));
+        }
+
+
+
     }
 
 //    BooleanExpression containTitle(String keyword){

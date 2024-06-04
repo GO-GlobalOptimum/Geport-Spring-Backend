@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,8 +32,8 @@ public class PostService {
     private final LikeRepository likeRepository;
 
     @Transactional
-    public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable) {
-        return postRepository.postListResponseDto(keyword, pageable);
+    public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable,Long memberId) {
+        return postRepository.postListResponseDto(keyword, pageable,memberId);
     }
 
     @Transactional
@@ -57,7 +58,8 @@ public class PostService {
                 .build();
 
         // 카테고리 설정
-        post.setCategories(categories);
+//        post.setCategories(categories);
+
         postRepository.save(post);
 
         // 태그 설정
@@ -157,6 +159,14 @@ public class PostService {
 
         // 게시물 주인에게 알림 전송
         notificationService.notify(post.getMember().getId(), "Your post received a new comment!", "comment");
+    }
+
+    public String deletePost(Long postId){
+
+        Optional<Post> findPost = postRepository.findById(postId);
+        postRepository.delete(findPost.orElseThrow( ));
+
+        return "delete"+postId;
     }
 
 }

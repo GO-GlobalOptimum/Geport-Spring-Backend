@@ -16,6 +16,7 @@ public class UserDto {
         private String nickname;
         private int age;
         private String city;
+
     }
 
 

@@ -44,7 +44,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     @Builder.Default
     private List<BookMark> bookMarks = new ArrayList<>();
 
@@ -52,16 +52,24 @@ public class Post extends BaseEntity {
 
     private int bookMarkCount;
 
-    @ManyToMany
-    @JoinTable(
-            name = "CategoryPost",
-            joinColumns = @JoinColumn(name = "post_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    @Builder.Default
-    private List<Category> categories = new ArrayList<>();
+//    @ManyToMany
+//    @JoinTable(
+//            name = "CategoryPost",
+//            joinColumns = @JoinColumn(name = "post_id"),
+//            inverseJoinColumns = @JoinColumn(name = "category_id")
+//
+//    )
+//    @Builder.Default
+//    private List<Category> categories = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<CategoryPost> categoryPostList = new ArrayList<>();
 
     private String tags;
+
+    public void delete() {
+        this.isDelete = true;
+    }
 
     // @Builder
     // public Post(String title, String content, String thumbnailText, String thumbnailImage ,Member member, String tags) {

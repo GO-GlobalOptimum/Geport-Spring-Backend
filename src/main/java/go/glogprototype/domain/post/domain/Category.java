@@ -20,8 +20,11 @@ public class Category {
 
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
-    private List<Post> posts = new ArrayList<>();
+//    @ManyToMany(mappedBy = "categories")
+//    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category")
+    private List<CategoryPost> categoryPostList = new ArrayList<>();
 
     @Builder
     public Category(String name) {
