@@ -1,5 +1,6 @@
 package go.glogprototype.domain.post.dto;
 
+import go.glogprototype.domain.post.domain.BookMark;
 import go.glogprototype.domain.post.domain.Post;
 import go.glogprototype.domain.user.domain.Member;
 import lombok.*;
@@ -21,44 +22,46 @@ public class  PostDto{
     @Getter
     public static class FindPostResponseDto {
         private Long id;
+        ;
         private String title;
+        private String viewsCount;
         private String postContent;
-        private String name;
-        private LocalDateTime createdDate;
-        private String thumbnailImage;
+        private Boolean isPublic;
         private int likeCount;
-        private int replyCount;
+        private String thumbnailImage;
+        private Boolean isComment;
+        private Boolean isDelete;
+        private Member member;
         private boolean bookMark;
-        private int viewsCount;
+        private int commentCount;
+        private int bookMarkCount;
+        private List<CategoryDto> categoryDtos;
+        private List<TagDto> tagDtos;
 
         @Builder
-        public FindPostResponseDto(Long id, String title, String postContent, String name, LocalDateTime createdDate, String thumbnailImage, int likeCount, int replyCount, boolean bookMark) {
+        public FindPostResponseDto(Long id, String title, String viewsCount, String postContent, Boolean isPublic, int likeCount, String thumbnailImage, Boolean isComment, Boolean isDelete, Member member, boolean bookMark, int commentCount, int bookMarkCount, List<CategoryDto> categoryDtos, List<TagDto> tagDtos) {
             this.id = id;
             this.title = title;
+            this.viewsCount = viewsCount;
             this.postContent = postContent;
-            this.name = name;
-            this.createdDate = createdDate;
-            this.thumbnailImage = thumbnailImage;
+            this.isPublic = isPublic;
             this.likeCount = likeCount;
-            this.replyCount = replyCount;
+            this.thumbnailImage = thumbnailImage;
+            this.isComment = isComment;
+            this.isDelete = isDelete;
+            this.member = member;
             this.bookMark = bookMark;
+            this.commentCount = commentCount;
+            this.bookMarkCount = bookMarkCount;
+            this.categoryDtos = categoryDtos;
+            this.tagDtos = tagDtos;
         }
 
-        public FindPostResponseDto(Post post) {
-            this.id = post.getId();
-            this.title = post.getTitle();
-            this.postContent = post.getPostContent();
-            this.name = post.getMember().getName();
-            this.thumbnailImage = post.getThumbnailImage();
-            this.createdDate = post.getCreatedAt();
-            this.viewsCount = post.getViewsCount(); // 추가된 필드 초기화
-        }
 
 //        public static FindPostResponseDto toFindPostResponseDto(Post post, Member member){
 //            return FindPostResponseDto.builder()
 //                    .id(post.getId())
 //                    .title(post.getTitle())
-//                    .createdDate(post.getCreatedDate())
 //                    .postContent(post.getPostContent())
 //                    .name(member.getName())
 //                    .thumbnailImage(post.getThumbnailImage())
@@ -66,7 +69,8 @@ public class  PostDto{
 //                    .replyCount(post.getCommentCount())
 //                    .build();
 //        }
+//    }
+
     }
-
-
 }
+

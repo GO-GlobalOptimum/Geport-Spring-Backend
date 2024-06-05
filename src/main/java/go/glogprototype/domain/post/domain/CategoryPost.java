@@ -1,6 +1,7 @@
 package go.glogprototype.domain.post.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,11 +15,18 @@ public class CategoryPost {
     @Column(name = "category_post_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @Builder
+    public CategoryPost(Long id, Post post, Category category) {
+        this.id = id;
+        this.post = post;
+        this.category = category;
+    }
 }

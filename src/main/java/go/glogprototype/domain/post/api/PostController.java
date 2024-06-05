@@ -36,7 +36,7 @@ public class PostController {
     
     //리스트
     @GetMapping("/list")
-    public Page<FindPostResponseDto> postList(@RequestParam(required = false) String keyword, Pageable pageable){
+    public Page<CreatePostResponseDto> postList(@RequestParam(required = false) String keyword, Pageable pageable){
         log.info("test={}", keyword);
         return postService.findAllPost(keyword, pageable,null);
     }
@@ -54,14 +54,14 @@ public class PostController {
 
     //카테고리별로 게시글 불러오기
     @GetMapping("/list/category-id={categoryId}")
-    public ResponseEntity<Page<FindPostResponseDto>> postListByCategory(@PathVariable Long categoryId, Pageable pageable) {
-        Page<FindPostResponseDto> postList = postService.findAllPostByCategory(categoryId, pageable);
+    public ResponseEntity<Page<CreatePostResponseDto>> postListByCategory(@PathVariable Long categoryId, Pageable pageable) {
+        Page<CreatePostResponseDto> postList = postService.findAllPostByCategory(categoryId, pageable);
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
     //조회수 기준 인기 게시글 리스트 불러오기
     @GetMapping("/list/popular")
-    public Page<FindPostResponseDto> postListByViews(Pageable pageable) {
+    public Page<CreatePostResponseDto> postListByViews(Pageable pageable) {
         return postService.findAllPostByViews(pageable);
     }
 
@@ -97,9 +97,9 @@ public class PostController {
 
     // 나의 게시글 리스트 불러오기
     @GetMapping("/list/my-list")
-    public ResponseEntity<Page<FindPostResponseDto>> postListByUser(@CookieValue ("memberId") Long memberId,Pageable pageable) {
+    public ResponseEntity<Page<CreatePostResponseDto>> postListByUser(@CookieValue ("memberId") Long memberId,Pageable pageable) {
 
-        Page<FindPostResponseDto> postList = postService.findAllPost(null,pageable,memberId);
+        Page<CreatePostResponseDto> postList = postService.findAllPost(null,pageable,memberId);
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 

@@ -3,9 +3,11 @@ package go.glogprototype.domain.post.application;
 import go.glogprototype.domain.notification.application.NotificationService;
 import go.glogprototype.domain.post.dao.*;
 import go.glogprototype.domain.post.domain.*;
+import go.glogprototype.domain.post.dto.CategoryDto;
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
 import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
+import go.glogprototype.domain.post.dto.TagDto;
 import go.glogprototype.domain.user.dao.UserRepository;
 import go.glogprototype.domain.user.domain.Member;
 import jakarta.transaction.Transactional;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,10 +33,8 @@ public class PostService {
     private final NotificationService notificationService;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
-    private final SearchPostRepositoryImpl searchPostRepositoryImpl;
-
     @Transactional
-    public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable,Long memberId) {
+    public Page<CreatePostResponseDto> findAllPost(String keyword, Pageable pageable,Long memberId) {
         return postRepository.postListResponseDto(keyword, pageable,memberId);
     }
 
@@ -42,70 +43,99 @@ public class PostService {
         Member member = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
-        // 카테고리 찾기
-        List<Category> categories = createPostRequestDto.getCategoryIds().stream()
-                .map(categoryId -> categoryRepository.findById(categoryId)
-                        .orElseThrow(() -> new IllegalArgumentException("No category found with ID: " + categoryId)))
-                .collect(Collectors.toList());
 
         // 포스트 생성
         Post post = Post.builder()
                 .title(createPostRequestDto.getTitle())
-                .postContent(createPostRequestDto.getContent())
-                .thumbnailText(createPostRequestDto.getThumbnailText())
+                .postContent(createPostRequestDto.getPostContent())
+                .viewsCount(0)
+                .isPublic(createPostRequestDto.isPublic())
+                .likeCount(createPostRequestDto.getLikeCount())
                 .thumbnailImage(createPostRequestDto.getThumbnailImage())
+                .isComment(createPostRequestDto.isComment())
+                .isDelete(createPostRequestDto.isDelete())
                 .member(member)
-                .tags(createPostRequestDto.getTags())
+                .commentCount(createPostRequestDto.getCommentCount())
+                .bookMarkCount(createPostRequestDto.getBookMarkCount())
+//                .tags(createPostRequestDto.getTags())
                 .build();
+
+        //태그 설정
+        List<String> tagList = createPostRequestDto.getTags();
+        List<TagDto> tagDtoList = new ArrayList<>();
+        for(String name : tagList) {
+            PostTag tag = PostTag.builder( )
+                    .contents(name)
+                    .post(post)
+                    .is_user(true)
+                    .build( );
+
+            tagDtoList.add(TagDto.toTagDto(tag, post));
+            post.getTags( ).add(tag);
+        }
 
         // 카테고리 설정
 //        post.setCategories(categories);
+        List<String> categoryList = createPostRequestDto.getCategories();
+        List<CategoryDto> categoryDtos = new ArrayList<>(  );
+        for(String categoryName: categoryList) {
+
+
+            Category category = Category.builder()
+                    .name(categoryName)
+                    .build();
+
+            CategoryPost categoryPost = CategoryPost.builder( )
+                    .category(category)
+                    .post(post).build( );
+
+            categoryDtos.add(CategoryDto.toCategoryDto(category,post));
+            post.getCategoryPostList().add(categoryPost);
+
+        }
 
         postRepository.save(post);
 
-        // 태그 설정
-        PostTag postTag = new PostTag(createPostRequestDto.getTags(), true);
-        postTag.setPost(post); // post 설정
-        postTagRepository.save(postTag);
-
         // 응답 DTO 생성
-        return new CreatePostResponseDto(post);
+        return  CreatePostResponseDto.toCreatePostResponseDto(post,categoryDtos,tagDtoList);
     }
 
     public CreatePostResponseDto getPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
 
-        return new CreatePostResponseDto(post) ;
+        return CreatePostResponseDto.toCreatePostResponseDto(post) ;
     }
 
-    public List<CreatePostResponseDto> getPostsByIds(List<Long> postIds) {
-        List<Post> posts = postRepository.findAllById(postIds);
-        return posts.stream()
-                .map(CreatePostResponseDto::new)
-                .collect(Collectors.toList());
-    }
+//    public List<CreatePostResponseDto> getPostsByIds(List<Long> postIds) {
+//        List<Post> posts = postRepository.findAllById(postIds);
+//        return posts.stream()
+//                .map(CreatePostResponseDto::new)
+//                .collect(Collectors.toList());
+//    }
 
     @Transactional
-    public Page<FindPostResponseDto> findAllPostByCategory(Long categoryId, Pageable pageable) {
+    public Page<CreatePostResponseDto> findAllPostByCategory(Long categoryId, Pageable pageable) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException("No category found with ID: " + categoryId));
-        return searchPostRepositoryImpl.postListByCategory(category.getId(), pageable);
+        return postRepository.postListByCategory(category.getId(), pageable);
     }
 
     @Transactional
-    public Page<FindPostResponseDto> findAllPostByViews(Pageable pageable) {
-        return postRepository.findAllByOrderByViewsCountDesc(pageable)
-                .map(post -> new FindPostResponseDto(post));
+    public Page<CreatePostResponseDto> findAllPostByViews(Pageable pageable) {
+
+        Page<CreatePostResponseDto> findPost = postRepository.findPostByViews(pageable);
+
+        return findPost;
     }
 
-    @Transactional
-    public Page<FindPostResponseDto> findAllPostsByUser(String email, Pageable pageable) {
-        Member member = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
-        return postRepository.findAllByMember(member, pageable)
-                .map(post -> new FindPostResponseDto(post));
-    }
+//    @Transactional
+//    public Page<CreatePostResponseDto> findAllPostsByUser(String email, Pageable pageable) {
+//        Member member = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
+//        return postRepository.findAllByMember(member, pageable)
+//                .map(post -> new CreatePostResponseDto(post));
+//    }
 
     //게시글 좋아요 서비스
     public void likePost(Long postId, String email) {
