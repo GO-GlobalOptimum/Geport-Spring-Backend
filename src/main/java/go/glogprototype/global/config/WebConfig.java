@@ -1,22 +1,43 @@
-// package go.glogprototype.global.config;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-// import org.springframework.context.annotation.Configuration;
-// import org.springframework.web.servlet.config.annotation.CorsRegistry;
-// import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-// import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+@Configuration
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-// @Configuration
-// @EnableWebMvc
-// public class WebConfig implements WebMvcConfigurer {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+                .antMatchers("/", "/home").permitAll()
+                .anyRequest().authenticated()
+                .and()
+            .oauth2Login()
+                .loginPage("/login")
+                .defaultSuccessUrl("/loginSuccess")
+                .failureUrl("/loginFailure")
+                .and()
+            .logout()
+                .logoutSuccessUrl("/");
 
-//     @Override
-//     public void addCorsMappings(CorsRegistry registry) {
-//         // 모든 경로에 대해 모든 HTTP 메서드에 대한 CORS를 허용
-//         registry.addMapping("/**")
-//                 // .allowedOrigins("http://localhost:8080", "http://localhost:3000", "http://geport.blog", "https://geport.blog")
-//                 .allowedOrigins("*")
-//                 .allowedMethods("GET", "POST", "PUT", "DELETE")
-//                 .allowCredentials(true)
-//                 .allowedHeaders("*");
-//     }
-// }
+        // 추가적인 CORS 설정
+        http.cors();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://default-spring-service-fc26e-24362057-fe271d0cca5a.kr.lb.naverncp.com")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
+            }
+        };
+    }
+}
