@@ -95,6 +95,15 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
+    public Page<FindPostResponseDto> findAllPostByCategory(Long categoryId, Pageable pageable) {
+        DataSourceContextHolder.setDataSourceType(DataSourceType.READ);
+        Category category = categoryReadRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("No category found with ID: " + categoryId));
+        return postReadRepository.findAllByCategoriesOrderByViewsCountDesc(category, pageable)
+                .map(post -> new FindPostResponseDto(post));
+    }
+
+    @Transactional(readOnly = true)
     public Page<FindPostResponseDto> findAllPostByViews(Pageable pageable) {
         DataSourceContextHolder.setDataSourceType(DataSourceType.READ);
         return postReadRepository.findAllByOrderByViewsCountDesc(pageable)
