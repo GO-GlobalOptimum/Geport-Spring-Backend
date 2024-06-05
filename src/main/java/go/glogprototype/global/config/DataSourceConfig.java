@@ -3,6 +3,7 @@ package go.glogprototype.global.config;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
@@ -19,11 +20,13 @@ import java.util.Map;
 public class DataSourceConfig {
 
     @Bean(name = "writeDataSourceProperties")
+    @ConfigurationProperties("spring.datasource.write")
     public DataSourceProperties writeDataSourceProperties() {
         return new DataSourceProperties();
     }
 
     @Bean(name = "readDataSourceProperties")
+    @ConfigurationProperties("spring.datasource.read")
     public DataSourceProperties readDataSourceProperties() {
         return new DataSourceProperties();
     }
