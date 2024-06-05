@@ -30,6 +30,7 @@ public class PostService {
     private final NotificationService notificationService;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final SearchPostRepositoryImpl searchPostRepositoryImpl;
 
     @Transactional
     public Page<FindPostResponseDto> findAllPost(String keyword, Pageable pageable,Long memberId) {
@@ -85,13 +86,12 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-//    @Transactional
-//    public Page<FindPostResponseDto> findAllPostByCategory(Long categoryId, Pageable pageable) {
-//        Category category = categoryRepository.findById(categoryId)
-//                .orElseThrow(() -> new IllegalArgumentException("No category found with ID: " + categoryId));
-//        return postRepository.findAllByCategoriesOrderByViewsCountDesc(category, pageable)
-//                .map(post -> new FindPostResponseDto(post));
-//    }
+    @Transactional
+    public Page<FindPostResponseDto> findAllPostByCategory(Long categoryId, Pageable pageable) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("No category found with ID: " + categoryId));
+        return searchPostRepositoryImpl.postListByCategory(category.getId(), pageable);
+    }
 
     @Transactional
     public Page<FindPostResponseDto> findAllPostByViews(Pageable pageable) {
@@ -168,5 +168,7 @@ public class PostService {
 
         return "delete"+postId;
     }
+
+
 
 }
