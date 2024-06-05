@@ -205,8 +205,8 @@ public class JwtService {
         idCookie.setHttpOnly(true); // Http 환경에서 동작
         idCookie.setSecure(true); // 이 속성과
         idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
-        idCookie.setPath("/");
-        idCookie.setMaxAge(1000 * 60 * 6);
+//        idCookie.setPath("/");
+//        idCookie.setMaxAge(1000 * 60 * 6);
         response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
     }
 }
