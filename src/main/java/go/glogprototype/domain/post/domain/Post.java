@@ -44,7 +44,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<BookMark> bookMarks = new ArrayList<>();
 
@@ -62,10 +62,13 @@ public class Post extends BaseEntity {
 //    @Builder.Default
 //    private List<Category> categories = new ArrayList<>();
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryPost> categoryPostList = new ArrayList<>();
 
     private String tags;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostTag> postTags = new ArrayList<>();
 
     public void delete() {
         this.isDelete = true;
