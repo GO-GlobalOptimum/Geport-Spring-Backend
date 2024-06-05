@@ -43,11 +43,11 @@ public class PostController {
 
     //게시글 작성
     @PostMapping("/post")
-    public ResponseEntity<String> createPost(@RequestBody CreatePostRequestDto createPostRequestDto, @AuthenticationPrincipal UserDetails userDetails){
+    public ResponseEntity<String> createPost(@CookieValue("memberId") String memberId,@RequestBody CreatePostRequestDto createPostRequestDto, @AuthenticationPrincipal UserDetails userDetails){
         //log.info("log:", member.toString());
-        log.info("userDetails:"+ userDetails.getUsername());  //여기서 말하는 username은 이메일임!
+//        log.info("userDetails:"+ userDetails.getUsername());  //여기서 말하는 username은 이메일임!
 
-        postService.createPost(createPostRequestDto, userDetails.getUsername());
+        postService.createPost(createPostRequestDto, Long.valueOf(memberId));
 
         return new ResponseEntity<>("success posting", HttpStatus.OK);
     }

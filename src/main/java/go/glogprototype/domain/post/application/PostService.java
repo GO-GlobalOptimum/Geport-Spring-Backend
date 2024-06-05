@@ -39,9 +39,9 @@ public class PostService {
     }
 
     @Transactional
-    public CreatePostResponseDto createPost(CreatePostRequestDto createPostRequestDto, String email) {
-        Member member = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
+    public CreatePostResponseDto createPost(CreatePostRequestDto createPostRequestDto, Long memberId) {
+        Member member = userRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with memberId: "+memberId));
 
 
         // 포스트 생성

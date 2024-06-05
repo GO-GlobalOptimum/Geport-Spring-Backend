@@ -3,10 +3,12 @@ package go.glogprototype.domain.post.dto;
 import go.glogprototype.domain.user.domain.Member;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
+@NoArgsConstructor
 public class CreatePostRequestDto {
     private Long id;;
     private String title;
