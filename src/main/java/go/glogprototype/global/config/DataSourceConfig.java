@@ -42,8 +42,8 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public AbstractRoutingDataSource routingDataSource(@Qualifier("writeDataSource") DataSource writeDataSource,
-                                                       @Qualifier("readDataSource") DataSource readDataSource) {
+    public DataSource routingDataSource(@Qualifier("writeDataSource") DataSource writeDataSource,
+                                        @Qualifier("readDataSource") DataSource readDataSource) {
         AbstractRoutingDataSource routingDataSource = new AbstractRoutingDataSource() {
             @Override
             protected Object determineCurrentLookupKey() {
@@ -61,12 +61,19 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(AbstractRoutingDataSource routingDataSource) {
-        LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
-        entityManagerFactory.setDataSource(routingDataSource);
-        entityManagerFactory.getJpaPropertyMap().put("hibernate.hbm2ddl.auto", "update");
-        entityManagerFactory.getJpaPropertyMap().put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
-        return entityManagerFactory;
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource routingDataSource) {
+        LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+        entityManagerFactoryBean.setDataSource(routingDataSource);
+        entityManagerFactoryBean.setPackagesToScan("go.glogprototype.domain.user.domain", "go.glogprototype.domain.post.domain");
+        entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+
+        // JPA properties 설정
+        Map<String, Object> jpaProperties = new HashMap<>();
+        jpaProperties.put("hibernate.hbm2ddl.auto", "update");
+        jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        entityManagerFactoryBean.setJpaPropertyMap(jpaProperties);
+
+        return entityManagerFactoryBean;
     }
 
     @Bean
