@@ -64,8 +64,8 @@ public class DataSourceConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(AbstractRoutingDataSource routingDataSource) {
         LocalContainerEntityManagerFactoryBean entityManagerFactory = new LocalContainerEntityManagerFactoryBean();
         entityManagerFactory.setDataSource(routingDataSource);
-        entityManagerFactory.setPackagesToScan("go.glogprototype.domain.post.domain", "go.glogprototype.domain.user.domain");
-        entityManagerFactory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        entityManagerFactory.getJpaPropertyMap().put("hibernate.hbm2ddl.auto", "update");
+        entityManagerFactory.getJpaPropertyMap().put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         return entityManagerFactory;
     }
 
