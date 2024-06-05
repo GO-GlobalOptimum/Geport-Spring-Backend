@@ -59,7 +59,8 @@ dependencies {
     //spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-
+    // JPA 의존성 추가
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.0.0'
 }
 
 
