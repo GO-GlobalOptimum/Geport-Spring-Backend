@@ -1,7 +1,9 @@
 package go.glogprototype.domain.notification.application;
 
 import go.glogprototype.domain.notification.dao.EmitterRepository;
+import go.glogprototype.domain.notification.dao.EmitterRepositoryWrite;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -10,7 +12,13 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class NotificationService {
+
+    @Qualifier("emitterRepositoryImpl")
     private final EmitterRepository emitterRepository;
+
+    @Qualifier("emitterRepositoryWriteImpl")
+    private final EmitterRepositoryWrite emitterRepositoryWrite;
+
     private static final Long DEFAULT_TIMEOUT = 600L * 1000 * 60;
 
     public SseEmitter subscribe(Long userId) {
@@ -37,7 +45,7 @@ public class NotificationService {
                         .data(data)
                         .comment(comment));
             } catch (IOException e) {
-                emitterRepository.deleteById(userId);
+                emitterRepositoryWrite.deleteById(userId);
                 emitter.completeWithError(e);
             }
         }
@@ -45,9 +53,9 @@ public class NotificationService {
 
     private SseEmitter createEmitter(Long userId) {
         SseEmitter emitter = new SseEmitter(DEFAULT_TIMEOUT);
-        emitterRepository.save(userId, emitter);
-        emitter.onCompletion(() -> emitterRepository.deleteById(userId));
-        emitter.onTimeout(() -> emitterRepository.deleteById(userId));
+        emitterRepositoryWrite.save(userId, emitter);
+        emitter.onCompletion(() -> emitterRepositoryWrite.deleteById(userId));
+        emitter.onTimeout(() -> emitterRepositoryWrite.deleteById(userId));
         return emitter;
     }
 }

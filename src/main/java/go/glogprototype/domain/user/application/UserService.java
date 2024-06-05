@@ -1,35 +1,39 @@
 package go.glogprototype.domain.user.application;
 
-import go.glogprototype.domain.user.dao.UserRepository;
+import go.glogprototype.domain.user.dao.UserReadRepository;
+import go.glogprototype.domain.user.dao.UserWriteRepository;
 import go.glogprototype.domain.user.domain.Authority;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.domain.user.dto.UserDto.*;
 import go.glogprototype.domain.user.dto.UserEditDto;
+import go.glogprototype.global.config.DataSourceContextHolder;
+import go.glogprototype.global.config.DataSourceType;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final UserReadRepository userReadRepository;
+    private final UserWriteRepository userWriteRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public void signUp(UserSignUpDto userSignUpDto) throws Exception {
+        DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
 
-        if (userRepository.findByEmail(userSignUpDto.getEmail()).isPresent()) {
+        if (userReadRepository.findByEmail(userSignUpDto.getEmail()).isPresent()) {
             throw new Exception("이미 존재하는 이메일입니다.");
         }
 
-        if (userRepository.findByNickName(userSignUpDto.getNickname()).isPresent()) {
+        if (userReadRepository.findByNickName(userSignUpDto.getNickname()).isPresent()) {
             throw new Exception("이미 존재하는 닉네임입니다.");
         }
 
@@ -43,23 +47,25 @@ public class UserService {
                 .build();
 
         user.passwordEncode(passwordEncoder);
-        userRepository.save(user);
+        userWriteRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public List<UserSignUpDto> findAll() {
-        List<Member> all = userRepository.findAll( );
-        List<UserSignUpDto> userSignUpDtos = new ArrayList<>(  );
-        for(Member user : all) {
-            UserSignUpDto userSignUpDto = new UserSignUpDto(user.getEmail(),user.getPassword(),user.getNickName(),user.getAge(),user.getCity());
+        DataSourceContextHolder.setDataSourceType(DataSourceType.READ);
+        List<Member> all = userReadRepository.findAll();
+        List<UserSignUpDto> userSignUpDtos = new ArrayList<>();
+        for (Member user : all) {
+            UserSignUpDto userSignUpDto = new UserSignUpDto(user.getEmail(), user.getPassword(), user.getNickName(), user.getAge(), user.getCity());
             userSignUpDtos.add(userSignUpDto);
         }
         return userSignUpDtos;
     }
 
-
     @Transactional(readOnly = true)
     public UserEditDto getMemberEditDTO(String email) {
-        Member member = userRepository.findByEmail(email)
+        DataSourceContextHolder.setDataSourceType(DataSourceType.READ);
+        Member member = userReadRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         UserEditDto memberEditDTO = new UserEditDto();
@@ -76,7 +82,8 @@ public class UserService {
 
     @Transactional
     public void editMember(String email, UserEditDto memberEditDTO) {
-        Member member = userRepository.findByEmail(email)
+        DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
+        Member member = userReadRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
 
         member.setNickName(memberEditDTO.getNickName());
@@ -87,32 +94,23 @@ public class UserService {
         member.setGender(memberEditDTO.getGender());
         member.setPhoneNumber(memberEditDTO.getPhoneNumber());
 
-        // 변경사항 저장
-        userRepository.save(member);
+        userWriteRepository.save(member);
     }
 
-     public UserInfoDto showUserInfo(Long memberId) {
+    @Transactional(readOnly = true)
+    public UserInfoDto showUserInfo(Long memberId) {
+        DataSourceContextHolder.setDataSourceType(DataSourceType.READ);
+        Optional<Member> findMember = userReadRepository.findById(memberId);
 
-        Optional<Member> findMember = userRepository.findById(memberId);
-
-
-          return  new UserInfoDto( findMember.orElseThrow().getName(),findMember.orElseThrow().getBio(),findMember.orElseThrow().getImageUrl() );
-//         UserInfoDto.builder( )
-//                .bio(findMember.orElseThrow().getBio())
-//                .id(findMember.orElseThrow().getId())
-//                .name(findMember.orElseThrow().getName())
-//                .imageUrl(findMember.orElseThrow().getImageUrl()).build( );
-
-
+        return new UserInfoDto(findMember.orElseThrow().getName(), findMember.orElseThrow().getBio(), findMember.orElseThrow().getImageUrl());
     }
 
+    @Transactional
     public UserInfoDto updateUserInfo(Long memberId, UserInfoDto userInfoDto) {
-
-        Optional<Member> findMember = userRepository.findById(memberId);
+        DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
+        Optional<Member> findMember = userReadRepository.findById(memberId);
         findMember.orElseThrow().update(userInfoDto);
 
         return userInfoDto;
     }
 }
-
-
