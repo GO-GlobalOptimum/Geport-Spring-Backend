@@ -13,7 +13,7 @@ public interface PostReadRepository extends JpaRepository<Post,Long> ,SearchPost
     Page<Post> findAllByOrderByViewsCountDesc(Pageable pageable);
 
     // 카테고리별로 게시글 조회
-    Page<Post> findAllByCategoriesOrderByViewsCountDesc(Category category, Pageable pageable);
+    //Page<Post> findAllByCategoriesOrderByViewsCountDesc(Category category, Pageable pageable);
 
     // 특정 사용자의 게시글 조회
     Page<Post> findAllByMember(Member member, Pageable pageable);
