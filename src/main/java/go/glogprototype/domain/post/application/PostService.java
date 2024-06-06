@@ -119,34 +119,45 @@ public class PostService {
                 .map(post -> new FindPostResponseDto(post));
     }
 
+    //게시글 좋아요 서비스
     @Transactional
     public void likePost(Long postId, String email) {
+        // 쓰기 데이터 소스로 설정
         DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
-        Post post = postWriteRepository.findById(postId) // Write Repository를 사용
+
+        // 게시글 조회 (쓰기 데이터베이스)
+        Post post = postWriteRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
 
+        // 좋아요를 누른 사용자 조회 (읽기 데이터베이스)
         Member liker = userReadRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
 
+        // 이미 좋아요가 눌렸는지 확인 (읽기 데이터베이스)
         boolean alreadyLiked = likeReadRepository.existsByMemberIdAndPostId(liker.getId(), postId);
         if (alreadyLiked) {
             throw new IllegalArgumentException("Post already liked by this user");
         }
 
+        // 좋아요 엔티티 생성 및 저장 (쓰기 데이터베이스)
         Like like = new Like();
         like.setPost(post);
         like.setMember(liker);
         likeWriteRepository.save(like);
 
+        // 좋아요 수 증가 (쓰기 데이터베이스)
         post.setLikeCount(post.getLikeCount() + 1);
         postWriteRepository.save(post);
 
+        // 게시물 주인 조회
         Member postOwner = post.getMember();
         Long postOwnerId = postOwner.getId();
 
+        // 게시물 주인과 좋아요를 누른 사용자에게 알림 전송
         notificationService.notify(postOwnerId, "Your post received a like!", "like");
         notificationService.notify(liker.getId(), "You liked a post!", "like");
     }
+
 
     public void commentOnPost(Long postId, String email, String commentText) {
         DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
