@@ -81,8 +81,18 @@ public class PostController {
     //게시글 좋아요 처리
     @PostMapping("/{postId}/like")
     public ResponseEntity<String> likePost(@PathVariable Long postId, @AuthenticationPrincipal UserDetails userDetails) {
-        postService.likePost(postId, userDetails.getUsername());
-        return new ResponseEntity<>("Post liked successfully", HttpStatus.OK);
+        try {
+            log.info("User {} is trying to like post {}", userDetails.getUsername(), postId);
+            postService.likePost(postId, userDetails.getUsername());
+            log.info("User {} successfully liked post {}", userDetails.getUsername(), postId);
+            return new ResponseEntity<>("Post liked successfully", HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            log.error("Error liking post: {}", e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Unexpected error liking post: {}", e.getMessage());
+            return new ResponseEntity<>("An unexpected error occurred: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //게시글 댓글 처리
