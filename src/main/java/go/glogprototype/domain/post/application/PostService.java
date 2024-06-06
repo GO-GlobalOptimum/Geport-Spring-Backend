@@ -119,9 +119,10 @@ public class PostService {
                 .map(post -> new FindPostResponseDto(post));
     }
 
+    @Transactional
     public void likePost(Long postId, String email) {
         DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
-        Post post = postReadRepository.findById(postId)
+        Post post = postWriteRepository.findById(postId) // Write Repository를 사용
                 .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
 
         Member liker = userReadRepository.findByEmail(email)
