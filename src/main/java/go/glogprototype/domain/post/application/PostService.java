@@ -167,9 +167,9 @@ public class PostService {
 
     public String deletePost(Long postId) {
         DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
-        Optional<Post> findPost = postReadRepository.findById(postId);
-        //postWriteRepository.delete(findPost.orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId)));
-
-        return "delete" + postId;
+        Post post = postWriteRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("No post found with id: " + postId));
+        postWriteRepository.delete(post);
+        return "delete " + postId;
     }
 }
