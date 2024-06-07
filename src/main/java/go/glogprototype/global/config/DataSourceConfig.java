@@ -69,7 +69,7 @@ public class DataSourceConfig {
 
         // JPA properties 설정
         Map<String, Object> jpaProperties = new HashMap<>();
-        jpaProperties.put("hibernate.hbm2ddl.auto", "create");
+        jpaProperties.put("hibernate.hbm2ddl.auto", "update");
         jpaProperties.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         entityManagerFactoryBean.setJpaPropertyMap(jpaProperties);
 
