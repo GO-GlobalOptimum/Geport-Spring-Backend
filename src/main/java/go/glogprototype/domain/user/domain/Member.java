@@ -65,6 +65,8 @@ public class Member extends BaseEntity {
 
     private String location;
 
+    private String person;
+
 
 
     // 유저 권한 설정 메소드
