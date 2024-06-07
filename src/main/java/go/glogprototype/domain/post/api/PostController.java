@@ -111,10 +111,10 @@ public class PostController {
 
     // 나의 게시글 리스트 불러오기
     @GetMapping("/list/my-list")
-    public ResponseEntity<Page<CreatePostResponseDto>> myPostList(@CookieValue ("memberId") String memberId,Pageable pageable) {
+    public Page<CreatePostResponseDto> myPostList(@CookieValue ("memberId") String memberId,Pageable pageable) {
 
         Page<CreatePostResponseDto> postList = postService.findAllPost(null,pageable,Long.valueOf(memberId));
-        return new ResponseEntity<>(postList, HttpStatus.OK);
+        return postList;
     }
 
     // 특정 사용자 이메일로 작성자의 게시글 리스트 불러오기
