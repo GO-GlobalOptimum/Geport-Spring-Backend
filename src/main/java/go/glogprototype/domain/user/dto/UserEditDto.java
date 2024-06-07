@@ -13,5 +13,7 @@ public class UserEditDto {
     private int age;
     private String gender;
     private String phoneNumber;
+    private String email;
+
 
 }
