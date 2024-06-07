@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -118,7 +119,7 @@ public class PostController {
 
     // 특정 사용자 이메일로 작성자의 게시글 리스트 불러오기
     @GetMapping("/list/user-id={userId}")
-    public ResponseEntity<Page<CreatePostResponseDto>> postListByUser(@RequestParam Long userId, Pageable pageable) {
+    public ResponseEntity<Page<CreatePostResponseDto>> postListByUser(@PathVariable Long userId, Pageable pageable) {
 
         Page<CreatePostResponseDto> postList = postService.findAllPost(null,pageable,userId);
 
