@@ -20,15 +20,21 @@ public class View {
     private int view_count = 0;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_VIEW_POST"))
+    @JoinColumn(name = "post_id"
+//           , foreignKey = @ForeignKey(name = "FK_VIEW_POST")
+    )
     private Post post;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "FK_VIEW_MEMBER"))
+    @JoinColumn(name = "member_id"
+//            , foreignKey = @ForeignKey(name = "FK_VIEW_MEMBER")
+    )
     private Member member;
 
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
+
+
 
     public View(Post post, Member member) {
         this.post = post;

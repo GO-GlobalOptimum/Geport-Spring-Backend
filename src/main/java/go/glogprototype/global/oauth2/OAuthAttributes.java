@@ -3,12 +3,9 @@ package go.glogprototype.global.oauth2;
 import go.glogprototype.domain.user.domain.Authority;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.global.oauth2.userinfo.GoogleOAuth2UserInfo;
-import go.glogprototype.global.oauth2.userinfo.KakaoOAuth2UserInfo;
-import go.glogprototype.global.oauth2.userinfo.NaverOAuth2UserInfo;
 import go.glogprototype.global.oauth2.userinfo.OAuth2UserInfo;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.Map;
 import java.util.UUID;

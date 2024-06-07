@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Entity
 @Getter
 @RequiredArgsConstructor
-@Table(name = "interest_tag")
+//@Table(name = "interest_tag")
 public class InterestTag {
 
     @Id

@@ -5,11 +5,10 @@ import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @RequiredArgsConstructor
-@Table(name = "post_tag", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"post_id", "contents"})
-})
+//@Table(name = "post_tag"
+////        , uniqueConstraints = {@UniqueConstraint(columnNames = {"post_id", "contents"})}
+//)
 public class PostTag {
 
     @Id
@@ -24,12 +23,15 @@ public class PostTag {
     private Boolean is_user;
 
     @ManyToOne
-    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "FK_post_tag_post_id"))
+    @JoinColumn(name = "post_id")
     private Post post;
 
-    public PostTag(String tags, boolean is_user) {
-        this.contents = tags;
+    @Builder
+    public PostTag(Long id, String contents, Boolean is_user, Post post) {
+        this.id = id;
+        this.contents = contents;
         this.is_user = is_user;
+        this.post = post;
     }
 }
 

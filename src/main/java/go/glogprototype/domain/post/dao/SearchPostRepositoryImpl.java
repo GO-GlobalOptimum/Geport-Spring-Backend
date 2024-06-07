@@ -11,6 +11,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import go.glogprototype.domain.post.domain.Category;
 import go.glogprototype.domain.post.domain.Post;
 import go.glogprototype.domain.post.domain.QBookMark;
+import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
 import go.glogprototype.domain.user.domain.Member;
 import org.springframework.data.domain.Page;
@@ -40,10 +41,10 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
         this.jpaQueryFactory = jpaQueryFactory;
     }
     @Override
-    public Page<FindPostResponseDto> postListResponseDto(String keyword, Pageable pageable, Long memberId) {
+    public Page<CreatePostResponseDto> postListResponseDto(String keyword, Pageable pageable, Long memberId) {
 
-        List<FindPostResponseDto> findPostResponseDtos = jpaQueryFactory
-                .select(Projections.fields(FindPostResponseDto.class,
+        List<CreatePostResponseDto> findPostResponseDtos = jpaQueryFactory
+                .select(Projections.fields(CreatePostResponseDto.class,
                                 post.id, post.title, post.postContent, member.name, post.createdAt, post.thumbnailImage, post.likeCount, post.commentCount,
 
                                 ExpressionUtils.as(
@@ -74,51 +75,74 @@ public class SearchPostRepositoryImpl extends QuerydslRepositorySupport implemen
 
     }
 
-//    @Override
-//    public Page<FindPostResponseDto> postListByCategory(Long categoryId,Pageable pageable) {
-//
-//        List<Long> postIds = jpaQueryFactory.select(categoryPost.post.id)
-//                .from(category)
-//                .innerJoin(category.categoryPostList, categoryPost)
-//                .where(category.id.eq(categoryId))
-//                .fetch( );
-//
-//        List<FindPostResponseDto> findPostResponseDtos = jpaQueryFactory
-//                .select(Projections.fields(FindPostResponseDto.class,
-//                                post.id, post.title, post.postContent, member.name, post.createdAt, post.thumbnailImage, post.likeCount, post.commentCount,
-//
-//                                ExpressionUtils.as(
-//                                        JPAExpressions.select(new CaseBuilder()
-//                                                        .when(Expressions.asBoolean(bookMark.id==null).isTrue()).then(false)
-//                                                        .otherwise(true)
-//                                                        .as("bookMark"))
-//                                                .from(bookMark)
-//                                                .where(bookMark.post.eq(post),bookMark.member.eq(member))
-//                                        ,
-//                                        "bookMark")
-//                        )
-//                )
-//                .from(post)
-//                .innerJoin(post.member,member)
-//                .where(post.id.in(postIds),post.isDelete.eq(false))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .orderBy(
-//                        post.createdAt.asc()
-//                ).fetch();
-//
-//
-//        return new PageImpl<>(findPostResponseDtos, pageable, findPostResponseDtos.size());
-//
-//    }
+    @Override
+    public Page<CreatePostResponseDto> findPostByViews(Pageable pageable) {
+
+        List<CreatePostResponseDto> findPostResponseDtos = jpaQueryFactory
+                .select(Projections.fields(CreatePostResponseDto.class,
+                                post.id, post.title, post.postContent, member.name, post.createdAt, post.thumbnailImage, post.likeCount, post.commentCount,
+
+                                ExpressionUtils.as(
+                                        JPAExpressions.select(new CaseBuilder()
+                                                        .when(Expressions.asBoolean(bookMark.id==null).isTrue()).then(false)
+                                                        .otherwise(true)
+                                                        .as("bookMark"))
+                                                .from(bookMark)
+                                                .where(bookMark.post.eq(post),bookMark.member.eq(member))
+                                        ,
+                                        "bookMark")
+                        )
+                )
+                .from(post)
+                .innerJoin(post.member,member)
+                .offset(pageable.getOffset())
+                .where(post.isDelete.eq(false))
+                .limit(pageable.getPageSize())
+                .orderBy(
+                        post.viewsCount.desc()
+                ).fetch();
+
+        return new PageImpl<>(findPostResponseDtos,pageable,findPostResponseDtos.size());
+
+    }
+
+    @Override
+    public Page<CreatePostResponseDto> postListByCategory(Long categoryId, Pageable pageable) {
+
+        List<Long> postIds = jpaQueryFactory.select(categoryPost.post.id)
+                .from(category)
+                .innerJoin(category.categoryPostList, categoryPost)
+                .where(category.id.eq(categoryId))
+                .fetch( );
+
+        List<CreatePostResponseDto> findPostResponseDtos = jpaQueryFactory
+                .select(Projections.fields(CreatePostResponseDto.class,
+                                post.id, post.title, post.postContent, member.name, post.createdAt, post.thumbnailImage, post.likeCount, post.commentCount,
+
+                                ExpressionUtils.as(
+                                        JPAExpressions.select(new CaseBuilder()
+                                                        .when(Expressions.asBoolean(bookMark.id==null).isTrue()).then(false)
+                                                        .otherwise(true)
+                                                        .as("bookMark"))
+                                                .from(bookMark)
+                                                .where(bookMark.post.eq(post),bookMark.member.eq(member))
+                                        ,
+                                        "bookMark")
+                        )
+                )
+                .from(post)
+                .innerJoin(post.member,member)
+                .where(post.id.in(postIds),post.isDelete.eq(false))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(
+                        post.createdAt.asc()
+                ).fetch();
 
 
+        return new PageImpl<>(findPostResponseDtos, pageable, findPostResponseDtos.size());
 
-//    BooleanExpression containKeyword(String keyword){
-//        if(keyword == null || keyword.isEmpty())
-//            return null;
-//        return post.postContent.contains(keyword).or(post.title.contains(keyword));
-//    }
+    }
 
     BooleanExpression containKeywordAndMemberId(String keyword, Long memberId){
 

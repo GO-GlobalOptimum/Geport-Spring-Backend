@@ -55,19 +55,19 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         Member findUser = userRepository.findByEmail(oAuth2User.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
-        
+
         log.info(findUser.getAuthority().toString());
         log.info("GUEST 회원가입 성공");
 
         // 회원가입 페이지로 리다이렉트
-        response.sendRedirect("https://geport.blog");
+        response.sendRedirect("http://localhost:3000/main");
     }
 
     private void handleAuthenticatedUser(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
         setCookieMemberId(response,oAuth2User);
-        response.sendRedirect("https://geport.blog"); // 메인페이지
-        
+        response.sendRedirect("http://localhost:3000/main"); // 메인페이지
+
         log.info("로그인 성공");
     }
 

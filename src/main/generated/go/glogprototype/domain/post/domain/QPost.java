@@ -55,16 +55,16 @@ public class QPost extends EntityPathBase<Post> {
 
     public final StringPath postContent = createString("postContent");
 
-    public final StringPath tags = createString("tags");
+    public final ListPath<PostTag, QPostTag> tags = this.<PostTag, QPostTag>createList("tags", PostTag.class, QPostTag.class, PathInits.DIRECT2);
 
     public final StringPath thumbnailImage = createString("thumbnailImage");
-
-    public final StringPath thumbnailText = createString("thumbnailText");
 
     public final StringPath title = createString("title");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
+
+    public final ListPath<go.glogprototype.domain.user.domain.View, go.glogprototype.domain.user.domain.QView> views = this.<go.glogprototype.domain.user.domain.View, go.glogprototype.domain.user.domain.QView>createList("views", go.glogprototype.domain.user.domain.View.class, go.glogprototype.domain.user.domain.QView.class, PathInits.DIRECT2);
 
     public final NumberPath<Integer> viewsCount = createNumber("viewsCount", Integer.class);
 

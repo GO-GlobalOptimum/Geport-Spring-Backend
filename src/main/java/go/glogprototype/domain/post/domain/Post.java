@@ -1,6 +1,9 @@
 package go.glogprototype.domain.post.domain;
 
+import go.glogprototype.domain.post.dto.CreatePostRequestDto;
 import go.glogprototype.domain.user.domain.Member;
+import go.glogprototype.domain.user.domain.View;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,8 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
 public class Post extends BaseEntity {
 
     @Id
@@ -32,8 +33,6 @@ public class Post extends BaseEntity {
 
     private int likeCount;
 
-    private String thumbnailText;
-
     private String thumbnailImage;
 
     private boolean isComment;
@@ -44,43 +43,51 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<BookMark> bookMarks = new ArrayList<>();
 
     private int commentCount;
 
     private int bookMarkCount;
 
-//    @ManyToMany
-//    @JoinTable(
-//            name = "CategoryPost",
-//            joinColumns = @JoinColumn(name = "post_id"),
-//            inverseJoinColumns = @JoinColumn(name = "category_id")
-//
-//    )
-//    @Builder.Default
-//    private List<Category> categories = new ArrayList<>();
-
-    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
     private List<CategoryPost> categoryPostList = new ArrayList<>();
 
-    private String tags;
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<PostTag> tags;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PostTag> postTags = new ArrayList<>();
+    @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
+    private List<View> views;
 
     public void delete() {
         this.isDelete = true;
     }
 
-    // @Builder
-    // public Post(String title, String content, String thumbnailText, String thumbnailImage ,Member member, String tags) {
-    //     this.title = title;
-    //     this.postContent = content;
-    //     this.thumbnailText = thumbnailText;
-    //     this.thumbnailImage = thumbnailImage;
-    //     this.member = member;
-    //     this.tags = tags;
-    // }
+    @Builder
+    public Post(Long id, String title, int viewsCount, String postContent, boolean isPublic, int likeCount, String thumbnailImage, boolean isComment, boolean isDelete, Member member, List<BookMark> bookMarks, int commentCount, int bookMarkCount, List<CategoryPost> categoryPostList, List<PostTag> tags) {
+        this.id = id;
+        this.title = title;
+        this.viewsCount = viewsCount;
+        this.postContent = postContent;
+        this.isPublic = isPublic;
+        this.likeCount = likeCount;
+        this.thumbnailImage = thumbnailImage;
+        this.isComment = isComment;
+        this.isDelete = isDelete;
+        this.member = member;
+        this.bookMarks = bookMarks;
+        this.commentCount = commentCount;
+        this.bookMarkCount = bookMarkCount;
+        this.categoryPostList = categoryPostList;
+        this.tags = tags;
+    }
+
+    public void update(CreatePostRequestDto createPostRequestDto,List<PostTag> postTagList,List<CategoryPost> categoryPostList) {
+
+        this.postContent=createPostRequestDto.getPostContent();
+        this.title=createPostRequestDto.getTitle();
+        this.tags=postTagList;
+        this.categoryPostList=categoryPostList;
+
+    }
 }

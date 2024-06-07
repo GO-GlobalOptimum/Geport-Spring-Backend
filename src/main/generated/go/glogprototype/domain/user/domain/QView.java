@@ -28,6 +28,8 @@ public class QView extends EntityPathBase<View> {
 
     public final go.glogprototype.domain.post.domain.QPost post;
 
+    public final DateTimePath<java.time.LocalDateTime> updatedTime = createDateTime("updatedTime", java.time.LocalDateTime.class);
+
     public final NumberPath<Integer> view_count = createNumber("view_count", Integer.class);
 
     public QView(String variable) {

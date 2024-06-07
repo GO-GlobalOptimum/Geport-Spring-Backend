@@ -23,12 +23,13 @@ public class Category {
 //    @ManyToMany(mappedBy = "categories")
 //    private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
     private List<CategoryPost> categoryPostList = new ArrayList<>();
 
     @Builder
-    public Category(String name) {
+    public Category(Long id, String name, List<CategoryPost> categoryPostList) {
+        this.id = id;
         this.name = name;
+        this.categoryPostList = categoryPostList;
     }
-
 }
