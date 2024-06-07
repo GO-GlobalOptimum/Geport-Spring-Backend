@@ -51,6 +51,8 @@ public class PostController {
 
         return new ResponseEntity<>("success posting", HttpStatus.OK);
     }
+    //게시글 수정
+
 
     //카테고리별로 게시글 불러오기
     @GetMapping("/list/category-id={categoryId}")

@@ -1,5 +1,6 @@
 package go.glogprototype.domain.post.domain;
 
+import go.glogprototype.domain.post.dto.CreatePostRequestDto;
 import go.glogprototype.domain.user.domain.Member;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.*;
@@ -75,5 +76,14 @@ public class Post extends BaseEntity {
         this.bookMarkCount = bookMarkCount;
         this.categoryPostList = categoryPostList;
         this.tags = tags;
+    }
+
+    public void update(CreatePostRequestDto createPostRequestDto,List<PostTag> postTagList,List<CategoryPost> categoryPostList) {
+
+        this.postContent=createPostRequestDto.getPostContent();
+        this.title=createPostRequestDto.getTitle();
+        this.tags=postTagList;
+        this.categoryPostList=categoryPostList;
+
     }
 }

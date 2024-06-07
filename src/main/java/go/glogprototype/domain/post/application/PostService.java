@@ -191,6 +191,52 @@ public class PostService {
         notificationService.notify(post.getMember().getId(), "Your post received a new comment!", "comment");
     }
 
+    public CreatePostResponseDto updatePost(Long postId, CreatePostRequestDto createPostRequestDto) {
+
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException());
+        List<String> newTagList = createPostRequestDto.getTags();
+        List<PostTag> postTagList = postTagRepository.findByPost(post);
+        postTagRepository.deleteAll(postTagList);
+
+        List<String> newCategoryList = createPostRequestDto.getCategories();
+        List<Category> categoryList = categoryRepository.findByPost(post);
+
+        List<CategoryPost> saveCategoryPostList = new ArrayList<>(  );
+
+        categoryRepository.deleteAll(categoryList);
+
+        postTagList.clear();
+        for(String name : newTagList) {
+            PostTag tag = PostTag.builder( )
+                    .contents(name)
+                    .post(post)
+                    .is_user(true)
+                    .build( );
+
+            postTagList.add(tag);
+        }
+
+        for(String categoryName: newCategoryList) {
+
+
+            Category category = Category.builder()
+                    .name(categoryName)
+                    .build();
+
+            CategoryPost categoryPost = CategoryPost.builder( )
+                    .category(category)
+                    .post(post).build( );
+
+            saveCategoryPostList.add(categoryPost);
+
+        }
+
+        post.update(createPostRequestDto,postTagList,saveCategoryPostList);
+
+        return CreatePostResponseDto.toCreatePostResponseDto(post);
+
+    }
+
     public String deletePost(Long postId){
 
         Optional<Post> findPost = postRepository.findById(postId);
