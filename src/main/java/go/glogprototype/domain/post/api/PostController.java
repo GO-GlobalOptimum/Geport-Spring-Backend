@@ -110,9 +110,9 @@ public class PostController {
 
     // 나의 게시글 리스트 불러오기
     @GetMapping("/list/my-list")
-    public ResponseEntity<Page<CreatePostResponseDto>> myPostList(@CookieValue ("memberId") Long memberId,Pageable pageable) {
+    public ResponseEntity<Page<CreatePostResponseDto>> myPostList(@CookieValue ("memberId") String memberId,Pageable pageable) {
 
-        Page<CreatePostResponseDto> postList = postService.findAllPost(null,pageable,memberId);
+        Page<CreatePostResponseDto> postList = postService.findAllPost(null,pageable,Long.valueOf(memberId));
         return new ResponseEntity<>(postList, HttpStatus.OK);
     }
 
