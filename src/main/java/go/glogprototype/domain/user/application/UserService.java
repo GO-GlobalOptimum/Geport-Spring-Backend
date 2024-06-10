@@ -102,7 +102,15 @@ public class UserService {
         DataSourceContextHolder.setDataSourceType(DataSourceType.READ);
         Optional<Member> findMember = userReadRepository.findById(memberId);
 
-        return new UserInfoDto(findMember.orElseThrow().getName(), findMember.orElseThrow().getBio(), findMember.orElseThrow().getImageUrl());
+        return UserInfoDto.builder( )
+                .bio(findMember.orElseThrow().getBio())
+                .gender(findMember.orElseThrow().getGender())
+                .nickName(findMember.orElseThrow(  ).getNickName())
+                .mbti(findMember.orElseThrow().getMbti())
+                .imageUrl(findMember.orElseThrow().getImageUrl())
+                .age(findMember.orElseThrow(  ).getAge())
+                .phoneNumber(findMember.orElseThrow().getPhoneNumber())
+                .build( );
     }
 
     @Transactional

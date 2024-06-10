@@ -112,7 +112,11 @@ public class Member extends BaseEntity {
         this.refreshToken = updateRefreshToken;
     }
     public void update(UserInfoDto userInfoDto) {
-        this.name = userInfoDto.getName();
+        this.nickName = userInfoDto.getNickName();
+        this.gender = userInfoDto.getGender();
+        this.mbti = userInfoDto.getMbti();
+        this.age = userInfoDto.getAge();
+        this.phoneNumber = userInfoDto.getPhoneNumber();
         this.bio = userInfoDto.getBio();
         this.imageUrl = userInfoDto.getImageUrl();
     }
