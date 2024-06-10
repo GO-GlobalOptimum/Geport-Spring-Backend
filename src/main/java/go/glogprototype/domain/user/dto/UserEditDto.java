@@ -14,6 +14,7 @@ public class UserEditDto {
     private String gender;
     private String phoneNumber;
     private String email;
+    private String name;
 
 
 }

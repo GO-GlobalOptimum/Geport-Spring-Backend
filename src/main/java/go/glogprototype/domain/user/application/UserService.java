@@ -77,6 +77,7 @@ public class UserService {
         memberEditDTO.setGender(member.getGender());
         memberEditDTO.setPhoneNumber(member.getPhoneNumber());
         memberEditDTO.setEmail(member.getEmail());
+        memberEditDTO.setName(member.getName());
 
         return memberEditDTO;
     }
