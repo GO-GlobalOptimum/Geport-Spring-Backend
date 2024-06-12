@@ -55,17 +55,17 @@ public class Post extends BaseEntity {
     private List<CategoryPost> categoryPostList = new ArrayList<>();
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
-    private List<PostTag> tags;
+    private List<PostTag> tags = new ArrayList<>(  );
 
     @OneToMany(mappedBy = "post",cascade = CascadeType.ALL)
-    private List<View> views;
+    private List<View> views = new ArrayList<>(  );
 
     public void delete() {
         this.isDelete = true;
     }
 
     @Builder
-    public Post(Long id, String title, int viewsCount, String postContent, boolean isPublic, int likeCount, String thumbnailImage, boolean isComment, boolean isDelete, Member member, List<BookMark> bookMarks, int commentCount, int bookMarkCount, List<CategoryPost> categoryPostList, List<PostTag> tags) {
+    public Post(Long id, String title, int viewsCount, String postContent, boolean isPublic, int likeCount, String thumbnailImage, boolean isComment, boolean isDelete, Member member, List<BookMark> bookMarks, int commentCount, int bookMarkCount) {
         this.id = id;
         this.title = title;
         this.viewsCount = viewsCount;
@@ -79,8 +79,8 @@ public class Post extends BaseEntity {
         this.bookMarks = bookMarks;
         this.commentCount = commentCount;
         this.bookMarkCount = bookMarkCount;
-        this.categoryPostList = categoryPostList;
-        this.tags = tags;
+        this.categoryPostList = new ArrayList<>();
+        this.tags = new ArrayList<>();
     }
 
     public void update(CreatePostRequestDto createPostRequestDto,List<PostTag> postTagList,List<CategoryPost> categoryPostList) {
