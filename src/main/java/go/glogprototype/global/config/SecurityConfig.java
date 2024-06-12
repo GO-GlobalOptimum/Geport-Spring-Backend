@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/spring/sign-up", "/spring/login", "/spring/swagger-ui/index.html/**", "/spring/api-docs", "/spring/swagger-ui-custom.html",
-                                "/spring/v3/api-docs/**", "/spring/swagger-ui/**", "/spring/api-docs/**", "/spring/swagger-ui.html", "/spring/swagger-custom-ui.html", "/spring/posts/test", "/spring/login/oauth2/code/google").permitAll()
+                                "/spring/v3/api-docs/**", "/spring/swagger-ui/**", "/spring/api-docs/**", "/spring/swagger-ui.html", "/spring/swagger-custom-ui.html", "/spring/posts/test", "/login/oauth2/code/google").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
