@@ -92,21 +92,21 @@ public class Member extends BaseEntity {
         this.authority = authority != null ? authority : Authority.USER; // null 체크
     }
     //== 유저 필드 업데이트 ==//
-    public void updateNickname(String updateNickname) {
-        this.nickName = updateNickname;
-    }
-
-    public void updateAge(int updateAge) {
-        this.age = updateAge;
-    }
-
-    public void updateCity(String updateCity) {
-        this.city = updateCity;
-    }
-
-    public void updatePassword(String updatePassword, PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(updatePassword);
-    }
+//    public void updateNickname(String updateNickname) {
+//        this.nickName = updateNickname;
+//    }
+//
+//    public void updateAge(int updateAge) {
+//        this.age = updateAge;
+//    }
+//
+//    public void updateCity(String updateCity) {
+//        this.city = updateCity;
+//    }
+//
+//    public void updatePassword(String updatePassword, PasswordEncoder passwordEncoder) {
+//        this.password = passwordEncoder.encode(updatePassword);
+//    }
 
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;

@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static go.glogprototype.domain.user.domain.QMember.member;
 
 @Builder
 @Data

@@ -1,6 +1,7 @@
 package go.glogprototype.domain.post.domain;
 
 import go.glogprototype.domain.post.dto.CreatePostRequestDto;
+import go.glogprototype.domain.user.domain.BaseEntity;
 import go.glogprototype.domain.user.domain.Member;
 import go.glogprototype.domain.user.domain.View;
 import io.swagger.v3.oas.annotations.tags.Tag;

@@ -10,7 +10,6 @@ import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import go.glogprototype.domain.post.domain.Category;
 import go.glogprototype.domain.post.domain.Post;
-import go.glogprototype.domain.post.domain.QBookMark;
 import go.glogprototype.domain.post.dto.CreatePostResponseDto;
 import go.glogprototype.domain.post.dto.PostDto.*;
 import go.glogprototype.domain.user.domain.Member;
@@ -23,13 +22,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+import static go.glogprototype.domain.post.domain.QBookMark.bookMark;
 import static go.glogprototype.domain.post.domain.QCategory.category;
 import static go.glogprototype.domain.post.domain.QCategoryPost.categoryPost;
 import static go.glogprototype.domain.post.domain.QPost.post;
 import static go.glogprototype.domain.user.domain.QMember.member;
-import static go.glogprototype.domain.post.domain.QBookMark.bookMark;
-import static org.hibernate.internal.util.collections.ArrayHelper.forEach;
 
 
 @Repository

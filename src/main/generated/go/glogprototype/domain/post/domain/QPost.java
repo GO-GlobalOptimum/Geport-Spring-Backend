@@ -22,7 +22,7 @@ public class QPost extends EntityPathBase<Post> {
 
     public static final QPost post = new QPost("post");
 
-    public final QBaseEntity _super = new QBaseEntity(this);
+    public final go.glogprototype.domain.user.domain.QBaseEntity _super = new go.glogprototype.domain.user.domain.QBaseEntity(this);
 
     public final NumberPath<Integer> bookMarkCount = createNumber("bookMarkCount", Integer.class);
 
@@ -35,9 +35,6 @@ public class QPost extends EntityPathBase<Post> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    //inherited
-    public final StringPath createdBy = _super.createdBy;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final BooleanPath isComment = createBoolean("isComment");
@@ -45,9 +42,6 @@ public class QPost extends EntityPathBase<Post> {
     public final BooleanPath isDelete = createBoolean("isDelete");
 
     public final BooleanPath isPublic = createBoolean("isPublic");
-
-    //inherited
-    public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
     public final NumberPath<Integer> likeCount = createNumber("likeCount", Integer.class);
 

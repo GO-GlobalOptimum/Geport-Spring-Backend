@@ -22,20 +22,14 @@ public class QComment extends EntityPathBase<Comment> {
 
     public static final QComment comment = new QComment("comment");
 
-    public final QBaseEntity _super = new QBaseEntity(this);
+    public final go.glogprototype.domain.user.domain.QBaseEntity _super = new go.glogprototype.domain.user.domain.QBaseEntity(this);
 
     public final StringPath comment_content = createString("comment_content");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    //inherited
-    public final StringPath createdBy = _super.createdBy;
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
-
-    //inherited
-    public final StringPath lastModifiedBy = _super.lastModifiedBy;
 
     public final go.glogprototype.domain.user.domain.QMember member;
 

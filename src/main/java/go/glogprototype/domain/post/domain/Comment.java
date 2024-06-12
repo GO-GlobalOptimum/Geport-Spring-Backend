@@ -1,5 +1,6 @@
 package go.glogprototype.domain.post.domain;
 
+import go.glogprototype.domain.user.domain.BaseEntity;
 import go.glogprototype.domain.user.domain.Member;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class Comment extends BaseEntity{
+public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
