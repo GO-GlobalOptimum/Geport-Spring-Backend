@@ -203,7 +203,8 @@ public class JwtService {
         // response에 쿠키 정보를 담는다.
         // 쿠키의 이름은 memberId이고, 값은 회원의 id를 담아둔다.
         idCookie.setHttpOnly(true); // Http 환경에서 동작
-        idCookie.setSecure(true); // 이 속성과
+        idCookie.setPath("/");
+        idCookie.setSecure(false); // 이 속성과
         idCookie.setAttribute("SameSite", "None"); // 이 속성 추가
         response.addCookie(idCookie); // 응답에 cookie를 넣어서 보낸다.
     }
