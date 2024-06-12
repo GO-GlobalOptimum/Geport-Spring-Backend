@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import go.glogprototype.domain.user.dto.UserDto.*;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -69,7 +70,7 @@ public class Member extends BaseEntity {
     private String person;
 
     @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
-    private List<View> views;
+    private List<View> views = new ArrayList<>();
 
 
     // 유저 권한 설정 메소드
