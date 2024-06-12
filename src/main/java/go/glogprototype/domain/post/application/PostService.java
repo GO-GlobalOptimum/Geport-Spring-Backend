@@ -57,10 +57,10 @@ public class PostService {
     //게시글 생성
 
     @Transactional
-    public CreatePostResponseDto createPost(CreatePostRequestDto createPostRequestDto, String email) {
+    public CreatePostResponseDto createPost(CreatePostRequestDto createPostRequestDto, Long memberId) {
         DataSourceContextHolder.setDataSourceType(DataSourceType.WRITE);
-        Member member = userReadRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("No member found with email: " + email));
+        Member member = userReadRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("No member found with memberId: " + memberId));
 
 //        // 카테고리 찾기
 //        List<Category> categories = createPostRequestDto.getCategoryIds().stream()
