@@ -49,12 +49,15 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/sign-up", "/login", "/swagger-ui/index.html/**", "/api-docs", "/swagger-ui-custom.html",
+                        .requestMatchers("/oauth2","/**", "/sign-up", "/login", "/swagger-ui/index.html/**", "/api-docs", "/swagger-ui-custom.html",
                                 "/v3/api-docs/**", "/swagger-ui/**", "/api-docs/**", "/swagger-ui.html", "/swagger-custom-ui.html", "/spring/posts/test", "/login/oauth2/code/google").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
-
+                        // .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+                        //         .baseUri("/oauth2/authorization/google"))
+                        // .redirectionEndpoint(redirectionEndpoint -> redirectionEndpoint
+                        //         .baseUri("/login/oauth2/code/google"))
                         .successHandler(oAuth2LoginSuccessHandler)
                         .failureHandler(oAuth2LoginFailureHandler)
                         .userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint.userService(customOAuth2UserService))

@@ -60,13 +60,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("GUEST 회원가입 성공");
 
         // 회원가입 페이지로 리다이렉트
-        response.sendRedirect("http://geport.blog/mainpage");
+        response.sendRedirect("http://localhost:3000/mainpage");
     }
 
     private void handleAuthenticatedUser(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
         setCookieMemberId(response,oAuth2User);
-        response.sendRedirect("http://geport.blog/mainpage"); // 메인페이지
+        response.sendRedirect("http://localhost:3000/mainpage"); // 메인페이지
 
         log.info("로그인 성공");
     }
@@ -78,7 +78,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         idCookie.setHttpOnly(true);
         idCookie.setSecure(true);
         idCookie.setPath("/");
-        idCookie.setMaxAge(1000 * 60 * 6);
         idCookie.setAttribute("SameSite", "None");
         response.addCookie(idCookie);
     }

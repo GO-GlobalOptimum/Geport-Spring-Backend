@@ -104,11 +104,11 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      * 생성된 User 객체를 DB에 저장 : socialType, socialId, email, role 값만 있는 상태
      */
     private Member saveUser(OAuthAttributes attributes, GoogleOAuth2UserInfo googleOAuth2UserInfo) {
-//        Member createdUser = attributes.toEntity(attributes.getOauth2UserInfo());
+        //Member createdUser = attributes.toEntity(attributes.getOauth2UserInfo());
         Member createdUser = Member.builder()
                 .email(googleOAuth2UserInfo.getEmail())
                 .name(googleOAuth2UserInfo.getNickname())
-                .authority(Authority.GUEST)
+                .authority(Authority.USER)
                 .imageUrl(googleOAuth2UserInfo.getImageUrl())
                 .socialId(googleOAuth2UserInfo.getOAuth2Id())
                 .location(googleOAuth2UserInfo.getLocale())
